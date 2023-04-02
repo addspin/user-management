@@ -1,0 +1,154 @@
+{%extends "base.html"%}
+{%block service%}
+
+{{side_pos}}
+
+{%endblock%}
+
+{%block service_div_main_form%}
+<!-- <div style="background-color: slategray"> -->
+<!-- <form class="row g-3 needs-validation" action="{{ url_for('service') }}"  method="POST" novalidate> -->
+<div class="um_hor_separation"></div>
+<div>
+<form class="needs-validation um_form_bg " action="{{ url_for('service_insert') }}" method="POST" novalidate>
+<div  style="margin: 8px; width: auto;" class ="um_form_service">
+    <div class="input-group mb-3">
+     <h5>Добавление нового сервиса:</h5>
+  </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text " id="basic-addon1">Наименование:</span>
+        <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control " placeholder="Название информационной системы" id="service_name" name="service_name" required>
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">URL или ip сервиса:</span>
+        <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control um_form_input_bg" placeholder="Ссылка на ресурс" id="service_url" name="service_url" required>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label ">Описание сервиса:</label>
+      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control um_form_input_bg" id="service_text"  name="service_text" rows="3" placeholder="Краткое определение сервиса или другие заметки"></textarea>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Ответсвенный:</span>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control um_form_input_bg" placeholder="Укажите отдел или ФИО" id="service_owner" name="service_owner" required>
+    </div>
+        <div class="input-group mb-3">
+        <input  class="btn btn-primary" type="submit" value="Добавить сервис" >
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        {% if category == 'error' %}
+            {% set alert_class = 'alert-warning' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ service_name }}</strong> уже существует!
+            </div>
+        {% else %}
+            {% set alert_class = 'alert-info' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+              {{ message }}<strong> {{ service_name }}</strong> добавлен!
+            </div>
+        {% endif %}
+            
+    {% endfor %}
+{% endwith %}
+
+</div>
+</form>
+</div>
+
+</div>
+<!-- Поиск сервиса -->
+
+<div class="um_hor_separation"></div>
+<form class="um_form_bg" action="" method="POST" novalidate>
+<div  style="margin: 8px; width: auto;" class ="um_form_service ">
+  <div class="input-group mb-3">
+    <h5>Поиск сервиса:</h5>
+ 
+  </div>
+<input style=" border: 2px solid #72a2e0; " class="um_form_input " list="datalistOptions" id="service_name_search" name="service_name_search" placeholder="Выбирите или начните набирать название сервиса">
+
+</form>
+
+<form  class="" action="{{ url_for('service_del') }}" method="POST" id="service_search" novalidate> 
+  <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 81vh;">
+  {% set i = namespace(value=0) %}
+  {% for value in search_value %}
+    
+   <label class="list-group-item list_items um_service_list">
+     <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.service_name }}" name="check_service" id="service_check{{ i.value }}"  onclick="service_change_data(this,service_remove_hide{{ i.value }},service_name_value{{ i.value }},service_url_value{{ i.value }},service_text_value{{ i.value }},service_owner_value{{ i.value }})">
+     <fieldset disabled>
+     <!-- Имя сервиса -->
+     <input style="display: none;"  type="text" value="{{ value.service_name }}" id="service_name_value{{ i.value }}">
+     <!-- URL сервиса -->
+     <input style="display: none;"  type="text" value="{{ value.service_url }}" id="service_url_value{{ i.value }}">
+     <!-- Текст сервиса -->
+     <input style="display: none;"  type="text" value="{{ value.service_text }}" id="service_text_value{{ i.value }}">
+     <!-- Ответственный сервиса -->
+     <input style="display: none;"  type="text" value="{{ value.service_owner }}" id="service_owner_value{{ i.value }}">
+    </fieldset>
+     <span>
+       <h6>{{ value.service_name }}</h6>
+       <small class="d-block text-muted">{{ value.service_text }}
+        <hr class="um_service_hr">
+        <strong>URL или ip сервиса:</strong>  <a href="{{ value.service_url }}">{{ value.service_url }}</a>
+        <hr class="um_service_hr">
+        <strong> Ответсвенный:</strong>  {{ value.service_owner }}
+       </small>
+       <hr class="um_service_hr">
+       <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить сервис" id="service_remove_hide{{ i.value }}">
+     </span> 
+   </label>
+      
+      {% set i.value = i.value + 1 %} 
+  {% endfor %}
+</div>
+  <fieldset disabled>
+    <input style="display: none;"  type="text" value="{{ i.value }}" name="" id="number_service">
+   </fieldset>
+
+   </div>
+</div>
+</div>
+</form>
+
+<!-- <div class="b-example-divider b-example-vr"></div> -->
+<div class="um_hor_separation"></div>
+<!-- Edit service -->
+<form style="display: none;" class="needs-validation um_form_bg" action="{{ url_for('service_change') }}" method="POST" id="service_change_hide" novalidate> 
+  <div style="margin: 20px; width: auto;">
+  <div class="list-group mx-0 w-auto um_form_service" style="margin-top: 15px ;">
+    <div class="input-group mb-3">
+     <h5>Изменить сервис :</h5>
+  </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Наименование:</span>
+        <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control um_form_input_bg" placeholder="Название информационной системы" id="service_name_change" name="service_name" value="" required>
+        <input type="text" style="display: none; " name="service_name_old" id="service_name_old" value="">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">URL или ip сервиса:</span>
+        <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control um_form_input_bg" placeholder="Ссылка на ресурс" id="service_url_change" name="service_url" value="" required>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Описание сервиса:</label>
+      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control um_form_input_bg" id="service_text_change"  name="service_text" rows="3" placeholder="Краткое определение сервиса или другие заметки"></textarea>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Ответсвенный:</span>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control um_form_input_bg" placeholder="Укажите отдел или ФИО" id="service_owner_change" name="service_owner" value="" required>
+    </div>
+        <div class="input-group mb-3">
+        <input  class="btn btn-primary" type="submit" value="Применить" >
+    </div>
+  </div>
+</div>
+
+</form>
+<script src="{{ url_for('static', filename='/js/jquery-3.6.1.min.js') }}"></script>
+<!-- Изменить данные сервиса -->
+<script src="{{ url_for('static', filename='/local_js/service_change_data.js') }}"></script>
+<!-- Поиск по списку сервисов -->
+<script src="{{ url_for('static', filename='/local_js/service_search_list.js') }}"></script>
+
+</div>
+{%endblock%}

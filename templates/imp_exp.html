@@ -1,0 +1,38 @@
+{%extends "base.html"%}
+{%block imp_exp%}
+{{side_pos}}
+{%endblock%}
+
+{%block imp_exp_div_main_form%}
+<form action="" enctype="multipart/form-data" method="POST">
+    <div  style="margin: 20px; width: 700px;">
+        <div class="input-group mb-3">
+            <h4>Импорт файла с пользователями:</h4>
+        </div>
+        <div class="mb-3">
+            <label for="formFile" class="form-label"></label>
+            <input class="form-control" type="file" name="file" accept=".csv">
+        </div>
+        <div class="input-group mb-3">
+            <input  class="btn btn-primary" type="submit" value="Импортировать пользователей" >
+        </div>
+        
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        {% if category == 'error' %}
+            {% set alert_class = 'alert-warning' %}
+        {% else %}
+            {% set alert_class = 'alert-info' %}
+        {% endif %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endwith %}
+        </div>
+    </div>
+</form>
+
+
+        
+{%endblock%}

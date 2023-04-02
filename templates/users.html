@@ -1,0 +1,224 @@
+{%extends "base.html"%}
+{%block users%}
+{{side_pos}}
+{%endblock%}
+
+{%block users_div_main_form%}
+<div class="um_hor_separation"></div>
+
+<form class="needs-validation" action="{{ url_for('users') }}" method="POST" novalidate>
+<div  style="margin: 20px; width: auto; color:#b3b3b3">
+    <div class="input-group mb-3">
+     <h4>Добавить данные пользователю:</h4>
+    
+  </div>
+  
+    <!-- <div class="input-group mb-3"> -->
+        <!-- <span class="input-group-text" id="basic-addon1">Пользователь:</span> -->
+        <hr>
+        <input style=" margin-bottom: 20px; border: 2px solid #72a2e0;" id="user_name" name="user_name" class="um_form_input"  list="datalistOptions" placeholder="Выберите пользователя" required>
+          <datalist id="datalistOptions">
+            {% for value in user %}
+            <option  value="{{ value.user_name }}">
+            {% endfor %}
+          </datalist>
+
+
+    <!-- </div> -->
+    <div >
+      
+        <b>Сервисы</b>
+        <div  style="margin-top: 20px; color: #b3b3b3;" class="div_insert_service">
+          
+      <!-- выбранные сервисы -->
+        </div>
+        <hr>
+    </div>
+   <!-- <div class="um_hor_separation01"></div> -->
+
+    <div>
+        <b>Объекты</b>
+        <div  style="margin-top: 20px; color: #b3b3b3;" class="div_insert_device">
+          <!-- выбранные устройства -->
+        </div>
+        <hr>
+    </div>
+
+    <div class="mb-3">
+      <!-- <label for="exampleFormControlTextarea1" class="form-label">Описание устройства:</label>
+      <textarea class="form-control" id="device_text"  name="device_text" rows="3" placeholder="Краткое определение устройства или другие заметки" required></textarea> -->
+    </div>
+        <div class="input-group mb-3">
+        <input  class="btn btn-primary" type="submit" value="Добавить объекты пользоватлю" >
+    </div>
+  
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        {% if category == 'user_error' %}
+            {% set alert_class = 'alert-warning' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            <strong>{{ message }}</strong>
+            </div>
+        {% elif category == 'info_add' %}
+            {% set alert_class = 'alert-success' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong>{{ user_name }}</strong> была успешно обновлена!
+            </div>    
+           
+        {% endif %}
+    {% endfor %}
+{% endwith %}
+
+</form>
+
+</div>
+
+<div class="um_hor_separation"></div>
+
+
+<!-- <div  style="margin: 20px;"> -->
+<div  style="margin-top: 20px; width: auto;" class =" ">
+<nav>
+  <div style="margin-left: 20px;" class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Выбор сервиса</button>
+    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Выбор устройства</button>
+    <!-- <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+    <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false" disabled>Disabled</button> -->
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+
+<!-- Поиск сервиса -->
+
+  <form style="margin: 20px; width: 600px;" class="needs-validation" action="" method="POST" id="service_search" novalidate> 
+    <input style=" border: 2px solid #72a2e0; " class="um_form_input " id="service_name_search" name="service_name_search" placeholder="Выбирите или начните набирать название сервиса">
+
+    <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 81vh;">
+    {% set i = namespace(value=0) %}
+    {% for value in search_value %}
+      
+     <label class="list-group-item list_items um_service_list">
+       <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.service_name }}" name="check_service" id="service_check{{ i.value }}"  onclick="select_service(this,service_name_value{{ i.value }},service_url_value{{ i.value }},service_text_value{{ i.value }},service_owner_value{{ i.value }})" required>
+       <fieldset disabled>
+       <!-- Имя сервиса -->
+       <input style="display: none;"  type="text" value="{{ value.service_name }}" id="service_name_value{{ i.value }}">
+       <!-- URL сервиса -->
+       <input style="display: none;"  type="text" value="{{ value.service_url }}" id="service_url_value{{ i.value }}">
+       <!-- Текст сервиса -->
+       <input style="display: none;"  type="text" value="{{ value.service_text }}" id="service_text_value{{ i.value }}">
+       <!-- Ответственный сервиса -->
+       <input style="display: none;"  type="text" value="{{ value.service_owner }}" id="service_owner_value{{ i.value }}">
+      </fieldset>
+       <span>
+         <h6>{{ value.service_name }}</h6>
+         <small class="d-block text-muted">{{ value.service_text }}
+          <hr class="um_service_hr">
+          <strong>URL или ip сервиса:</strong>  <a href="{{ value.service_url }}">{{ value.service_url }}</a>
+          <hr class="um_service_hr">
+          <strong> Ответсвенный:</strong>  {{ value.service_owner }}
+         </small>
+         <hr class="um_service_hr">
+         <!-- <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить сервис" id="service_remove_hide{{ i.value }}"> -->
+       </span> 
+     </label>
+        {% set i.value = i.value + 1 %} 
+    {% endfor %}
+  </div>
+    <fieldset disabled>
+      <input style="display: none;"  type="text" value="{{ i.value }}" name="" id="number_service">
+     </fieldset>
+    
+  
+ 
+  </form>
+</div>
+
+
+
+<!-- <div  style="margin-top: 20px; width: 600px;" class =" "> -->
+
+
+<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+
+  
+<!-- Поиск устройства -->
+
+  <form style="margin: 20px; width: 600px;" class="needs-validation" action="" method="POST" id="device_search" novalidate> 
+
+  <input style=" border: 2px solid #72a2e0; " class="um_form_input"  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название устройства">
+
+    <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 81vh;">
+    {% set i = namespace(value=0) %}
+    {% for value in device_value %}
+  
+     <label class="list-group-item list_items um_service_list">
+       <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.device_ident }}" name="device_ident" id="device_ident{{ i.value }}" onclick="select_device(this,device_ident_value{{ i.value }},device_inv_value{{ i.value }},device_type_value{{ i.value }},device_text_value{{ i.value }})" required>
+       <fieldset disabled>
+        <!-- Имя сервиса -->
+        <input style="display: none;"  type="text" value="{{ value.device_type_name }}" id="device_type_value{{ i.value }}">
+        <!-- URL сервиса -->
+        <input style="display: none;"  type="text" value="{{ value.device_inv }}" id="device_inv_value{{ i.value }}">
+        <!-- Текст сервиса -->
+        <input style="display: none;"  type="text" value="{{ value.device_ident }}" id="device_ident_value{{ i.value }}">
+        <!-- Ответственный сервиса -->
+        <input style="display: none;"  type="text" value="{{ value.device_text }}" id="device_text_value{{ i.value }}">
+       </fieldset>
+       <span>
+         <h6>ID: {{ value.device_ident }}</h6>
+         <small class="d-block text-muted">
+          <hr class="um_service_hr">
+          <strong>Инвентарный №:</strong>  {{ value.device_inv }}
+          <hr class="um_service_hr">
+          <strong>Тип устройства:</strong>  {{ value.device_type_name }}
+          <hr class="um_service_hr">
+          {{ value.device_text }}
+         </small>
+         <hr class="um_service_hr">
+         <!-- <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить устройство" id="device_remove_hide{{ i.value }}"> -->
+       </span> 
+     </label>
+        {% set i.value = i.value + 1 %} 
+    {% endfor %}
+    </div>
+    <fieldset disabled>
+      <input style="display: none;"  type="text" value="{{ i.value }}" name="" id="number_device">
+     </fieldset>
+
+  </div>
+  </div>
+
+
+
+  </form>
+</div>
+</div>
+
+
+
+
+
+<!-- <script src="{{ url_for('static', filename='/local_js/insert_del_btn_device.js') }}"></script> -->
+<script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='/js/jquery-3.6.1.min.js') }}"></script>
+<!-- Изменить данные сервиса -->
+<!-- <script src="{{ url_for('static', filename='/local_js/device_change_data.js') }}"></script> -->
+<!-- Поиск по списку сервисов -->
+<script src="{{ url_for('static', filename='/local_js/device_search_list.js') }}"></script>
+<script src="{{ url_for('static', filename='/local_js/service_search_list.js') }}"></script>
+<script src="{{ url_for('static', filename='/local_js/select_service_for_user.js') }}"></script>
+<script src="{{ url_for('static', filename='/local_js/select_device_for_user.js') }}"></script>
+
+<script>
+   $('#service_search').on('submit',function(event){  
+    event.preventDefault();
+  });
+  $('#device_search').on('submit',function(event){  
+    event.preventDefault();
+  });
+ 
+</script>
+
+
+{%endblock%}

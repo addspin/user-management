@@ -1,0 +1,202 @@
+{%extends "base.html"%}
+{%block device%}
+{{side_pos}}
+{%endblock%}
+
+{%block device_div_main_form%}
+<div class="um_hor_separation"></div>
+<!-- <form class="row g-3 needs-validation" action="{{ url_for('device') }}"  method="POST" novalidate> -->
+<form class="needs-validation um_form_service" action="{{ url_for('device_insert') }}" method="POST" novalidate>
+<div  style="margin: 20px; width: auto;">
+    <div class="input-group mb-3">
+     <h4>Добавление нового устройства:</h4>
+  </div>
+  
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Тип устройства:</span>
+
+        <select style="background-color: #212529; color: #b3b3b3;" id="device_type_name" name="device_type_name" class="form-select" aria-label="Default select example">
+          <option selected>Выберите тип устройства</option>
+            {% for value in search_value %}
+            <option  value="{{ value.device_type_name }}">{{ value.device_type_name }}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Инвентарный №:</span>
+        <input style="background-color: #212529; color: #b3b3b3;" type="number" class="form-control" placeholder="Цифровой инвентарный код" id="device_inv" name="device_inv" required>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Идентификатор:</span>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Уникальный идентификатор устройства" id="device_ident" name="device_ident" required>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Описание устройства:</label>
+      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text"  name="device_text" rows="3" placeholder="Краткое определение устройства или другие заметки" required></textarea>
+    </div>
+        <div class="input-group mb-3">
+        <input  class="btn btn-primary" type="submit" value="Добавить устройство" >
+    </div>
+  
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        {% if category == 'error' %}
+            {% set alert_class = 'alert-warning' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ device_ident }}</strong> уже существует!
+            </div>
+        {% elif category == 'type_exists' %}
+            {% set alert_class = 'alert-warning' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ device_type_name }}</strong> уже существует!
+            </div>    
+        {% elif category == 'insert_type' %}
+            {% set alert_class = 'alert-success' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ device_type_name }}</strong> добавлен!
+            </div>    
+        {% elif category == 'type_info' %}
+            {% set alert_class = 'alert-success' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ device_type_name }}</strong> удален!
+            </div>
+        {% else %}
+            {% set alert_class = 'alert-success' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+              {{ message }}<strong> {{ device_ident }}</strong> добавлен!
+            </div>
+            
+        {% endif %}
+    {% endfor %}
+{% endwith %}
+
+</form>
+
+<div style="margin-top: 50px;"class="input-group mb-3">
+  <h4>Добавить или удалить тип устройства:</h4>
+</div>
+<form action="{{ url_for('device_insert_type') }}" method="POST" novalidate>
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1">Тип устройства:</span>
+    <input style="background-color: #212529; color: #b3b3b3;" class="form-control" list="datalistOptions" id="device_type_name" name="device_type_name" placeholder="Уникальный тип устройства" >
+<datalist id="datalistOptions">
+  {% for value in search_value %}
+  <option value="{{ value.device_type_name }}">
+  {% endfor %}
+
+</datalist>
+  </div>
+<div class="row">
+<div class="col">
+  <input  formaction="{{ url_for('device_insert_type') }}" formmethod="post" class="btn btn-primary" type="submit" value="Добавить тип устройства">
+</div>
+<div class="col-md-auto">
+  <input  formaction="{{ url_for('device_remove_type') }}" formmethod="post" class="btn btn-danger" type="submit" value="Удалить тип устройства">
+</div>
+</div>
+
+</form>
+</div>
+
+<div class="um_hor_separation"></div>
+
+<!-- Поиск устройства -->
+
+<form class="um_form_service" action="" method="POST" novalidate>
+<div  style="margin: 20px; width: auto;" class ="">
+  <div class="input-group mb-3">
+    <h5>Поиск устройства:</h5>
+  </div>
+<input style=" border: 2px solid #72a2e0; " class="um_form_input "  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название устройства">
+
+</form>
+<form class="" action="{{ url_for('device_del') }}" method="POST" id="device_search" novalidate> 
+  <div class="list-group mx-0 w-auto" style="margin-top: 15px; height: 81vh;">
+  {% set i = namespace(value=0) %}
+  {% for value in device_value %}
+
+   <label class="list-group-item list_items um_service_list">
+     <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.device_ident }}" name="device_ident" id="device_ident{{ i.value }}" onclick="device_change_data(this,device_remove_hide{{ i.value }},device_type_value{{ i.value }},device_inv_value{{ i.value }},device_ident_value{{ i.value }},device_text_value{{ i.value }})">
+     <fieldset disabled>
+      <!-- Имя сервиса -->
+      <input style="display: none;"  type="text" value="{{ value.device_type_name }}" id="device_type_value{{ i.value }}">
+      <!-- URL сервиса -->
+      <input style="display: none;"  type="text" value="{{ value.device_inv }}" id="device_inv_value{{ i.value }}">
+      <!-- Текст сервиса -->
+      <input style="display: none;"  type="text" value="{{ value.device_ident }}" id="device_ident_value{{ i.value }}">
+      <!-- Ответственный сервиса -->
+      <input style="display: none;"  type="text" value="{{ value.device_text }}" id="device_text_value{{ i.value }}">
+     </fieldset>
+     <span>
+       <h6>ID: {{ value.device_ident }}</h6>
+       <small class="d-block text-muted">
+        <hr class="um_service_hr">
+        <strong>Инвентарный №:</strong>  {{ value.device_inv }}
+        <hr class="um_service_hr">
+        <strong>Тип устройства:</strong>  {{ value.device_type_name }}
+        <hr class="um_service_hr">
+        {{ value.device_text }}
+       </small>
+       <hr class="um_service_hr">
+       <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить устройство" id="device_remove_hide{{ i.value }}">
+     </span> 
+   </label>
+      {% set i.value = i.value + 1 %} 
+  {% endfor %}
+  </div>
+  <fieldset disabled>
+    <input style="display: none;"  type="text" value="{{ i.value }}" name="" id="number_device">
+   </fieldset>
+  <!-- <div class="um_margin">
+    <input  class="btn btn-danger" type="submit" value="Удалить сервис">
+  </div> -->
+   </div>
+</div>
+</div>
+</form>
+
+</div>
+
+<!-- Edit device -->
+<div class="um_hor_separation"></div>
+<form style="display: none;" class="needs-validation um_form_service" action="{{ url_for('device_change') }}" method="POST" id="device_change_hide" novalidate> 
+  <div style="margin: 20px; width: auto;">
+  <div class="list-group mx-0 w-auto" style="margin-top: 15px ;">
+    <div class="input-group mb-3">
+     <h5>Изменить устройство:</h5>
+  </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Идентификатор:</span>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Уникальный идентификатор устройства" id="device_ident_change" name="device_ident" value="" required>
+      <input type="text" style="display: none;" name="device_ident_old" id="device_ident_old" value="">
+    </div>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Инвентарный №:</span>
+        <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Цифровой инвентарный код" id="device_inv_change" name="device_inv" value="" required>
+    </div>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Тип устройства:</span>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Тип устройства" id="device_type_name_change" name="device_type_name" value="" required>  
+  </div>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Описание устройства:</label>
+      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text_change"  name="device_text" rows="3" placeholder="Краткое определение устройства или другие заметки"></textarea>
+    </div>
+        <div class="input-group mb-3">
+        <input  class="btn btn-primary" type="submit" value="Применить" >
+    </div>
+  </div>
+</div>
+
+</form>
+
+<!-- <script src="{{ url_for('static', filename='/local_js/insert_del_btn_device.js') }}"></script> -->
+<!-- <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script> -->
+
+<script src="{{ url_for('static', filename='/js/jquery-3.6.1.min.js') }}"></script>
+<!-- Изменить данные сервиса -->
+<script src="{{ url_for('static', filename='/local_js/device_change_data.js') }}"></script>
+<!-- Поиск по списку сервисов -->
+<script src="{{ url_for('static', filename='/local_js/device_search_list.js') }}"></script>
+{%endblock%}
