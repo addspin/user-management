@@ -5,7 +5,7 @@ from os.path import join, dirname, realpath
 import sqlite3
 import pandas as pd
 import json
-#
+
 path_db = 'db/um.db'
 name_table_service = 'service'
 
