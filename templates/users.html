@@ -6,14 +6,14 @@
 {%block users_div_main_form%}
 <div class="um_hor_separation"></div>
 
-<form class="needs-validation" action="{{ url_for('users') }}" method="POST" novalidate>
+<form class="needs-validation um_form_service" action="{{ url_for('users') }}" method="POST" novalidate>
 <div  style="margin: 20px; width: auto; color:#b3b3b3">
     <div class="input-group mb-3">
-     <h4>Добавить данные пользователю:</h4>
+     <h5>Добавить данные пользователю:</h5>
     
   </div>
   
-    <!-- <div class="input-group mb-3"> -->
+    <div class="input-group mb-3">
         <!-- <span class="input-group-text" id="basic-addon1">Пользователь:</span> -->
         <hr>
         <input style=" margin-bottom: 20px; border: 2px solid #72a2e0;" id="user_name" name="user_name" class="um_form_input"  list="datalistOptions" placeholder="Выберите пользователя" required>
@@ -24,7 +24,7 @@
           </datalist>
 
 
-    <!-- </div> -->
+    </div>
     <div >
       
         <b>Сервисы</b>

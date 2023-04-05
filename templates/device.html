@@ -9,14 +9,14 @@
 <form class="needs-validation um_form_service" action="{{ url_for('device_insert') }}" method="POST" novalidate>
 <div  style="margin: 20px; width: auto;">
     <div class="input-group mb-3">
-     <h4>Добавление нового устройства:</h4>
+     <h5>Добавление нового объекта:</h5>
   </div>
   
     <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">Тип устройства:</span>
+        <span class="input-group-text" id="basic-addon1">Тип объекта:</span>
 
         <select style="background-color: #212529; color: #b3b3b3;" id="device_type_name" name="device_type_name" class="form-select" aria-label="Default select example">
-          <option selected>Выберите тип устройства</option>
+          <option selected>Выберите тип объекта</option>
             {% for value in search_value %}
             <option  value="{{ value.device_type_name }}">{{ value.device_type_name }}</option>
             {% endfor %}
@@ -29,14 +29,14 @@
     </div>
     <div class="input-group mb-3">
       <span class="input-group-text" id="basic-addon1">Идентификатор:</span>
-      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Уникальный идентификатор устройства" id="device_ident" name="device_ident" required>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Уникальный идентификатор объекта" id="device_ident" name="device_ident" required>
     </div>
     <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">Описание устройства:</label>
-      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text"  name="device_text" rows="3" placeholder="Краткое определение устройства или другие заметки" required></textarea>
+      <label for="exampleFormControlTextarea1" class="form-label">Описание объекта:</label>
+      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text"  name="device_text" rows="3" placeholder="Краткое определение объекта или другие заметки" required></textarea>
     </div>
         <div class="input-group mb-3">
-        <input  class="btn btn-primary" type="submit" value="Добавить устройство" >
+        <input  class="btn btn-primary" type="submit" value="Добавить объект" >
     </div>
   
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -46,6 +46,11 @@
             <div class="alert {{alert_class}} fade show" role="alert">
             {{ message }}<strong> {{ device_ident }}</strong> уже существует!
             </div>
+        {% elif category == 'type_error' %}
+            {% set alert_class = 'alert-warning' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ device_type_name }}</strong>
+            </div>    
         {% elif category == 'type_exists' %}
             {% set alert_class = 'alert-warning' %}
             <div class="alert {{alert_class}} fade show" role="alert">
@@ -74,12 +79,12 @@
 </form>
 
 <div style="margin-top: 50px;"class="input-group mb-3">
-  <h4>Добавить или удалить тип устройства:</h4>
+  <h5>Добавить или удалить тип объекта:</h5>
 </div>
 <form action="{{ url_for('device_insert_type') }}" method="POST" novalidate>
   <div class="input-group mb-3">
-    <span class="input-group-text" id="basic-addon1">Тип устройства:</span>
-    <input style="background-color: #212529; color: #b3b3b3;" class="form-control" list="datalistOptions" id="device_type_name" name="device_type_name" placeholder="Уникальный тип устройства" >
+    <span class="input-group-text" id="basic-addon1">Тип объекта:</span>
+    <input style="background-color: #212529; color: #b3b3b3;" class="form-control" list="datalistOptions" id="device_type_name" name="device_type_name" placeholder="Уникальный тип объекта" >
 <datalist id="datalistOptions">
   {% for value in search_value %}
   <option value="{{ value.device_type_name }}">
@@ -89,10 +94,10 @@
   </div>
 <div class="row">
 <div class="col">
-  <input  formaction="{{ url_for('device_insert_type') }}" formmethod="post" class="btn btn-primary" type="submit" value="Добавить тип устройства">
+  <input  formaction="{{ url_for('device_insert_type') }}" formmethod="post" class="btn btn-primary" type="submit" value="Добавить тип объекта">
 </div>
 <div class="col-md-auto">
-  <input  formaction="{{ url_for('device_remove_type') }}" formmethod="post" class="btn btn-danger" type="submit" value="Удалить тип устройства">
+  <input  formaction="{{ url_for('device_remove_type') }}" formmethod="post" class="btn btn-danger" type="submit" value="Удалить тип объекта">
 </div>
 </div>
 
@@ -101,14 +106,14 @@
 
 <div class="um_hor_separation"></div>
 
-<!-- Поиск устройства -->
+<!-- Поиск объекта -->
 
 <form class="um_form_service" action="" method="POST" novalidate>
 <div  style="margin: 20px; width: auto;" class ="">
   <div class="input-group mb-3">
-    <h5>Поиск устройства:</h5>
+    <h5>Поиск объекта:</h5>
   </div>
-<input style=" border: 2px solid #72a2e0; " class="um_form_input "  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название устройства">
+<input style=" border: 2px solid #72a2e0; " class="um_form_input "  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название объекта">
 
 </form>
 <form class="" action="{{ url_for('device_del') }}" method="POST" id="device_search" novalidate> 
@@ -134,12 +139,12 @@
         <hr class="um_service_hr">
         <strong>Инвентарный №:</strong>  {{ value.device_inv }}
         <hr class="um_service_hr">
-        <strong>Тип устройства:</strong>  {{ value.device_type_name }}
+        <strong>Тип объекта:</strong>  {{ value.device_type_name }}
         <hr class="um_service_hr">
         {{ value.device_text }}
        </small>
        <hr class="um_service_hr">
-       <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить устройство" id="device_remove_hide{{ i.value }}">
+       <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить объект" id="device_remove_hide{{ i.value }}">
      </span> 
    </label>
       {% set i.value = i.value + 1 %} 
@@ -164,11 +169,11 @@
   <div style="margin: 20px; width: auto;">
   <div class="list-group mx-0 w-auto" style="margin-top: 15px ;">
     <div class="input-group mb-3">
-     <h5>Изменить устройство:</h5>
+     <h5>Изменить объекта:</h5>
   </div>
     <div class="input-group mb-3">
       <span class="input-group-text" id="basic-addon1">Идентификатор:</span>
-      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Уникальный идентификатор устройства" id="device_ident_change" name="device_ident" value="" required>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Уникальный идентификатор объекта" id="device_ident_change" name="device_ident" value="" required>
       <input type="text" style="display: none;" name="device_ident_old" id="device_ident_old" value="">
     </div>
     <div class="input-group mb-3">
@@ -176,12 +181,12 @@
         <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Цифровой инвентарный код" id="device_inv_change" name="device_inv" value="" required>
     </div>
     <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1">Тип устройства:</span>
-      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Тип устройства" id="device_type_name_change" name="device_type_name" value="" required>  
+      <span class="input-group-text" id="basic-addon1">Тип объекта:</span>
+      <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control" placeholder="Тип объекта" id="device_type_name_change" name="device_type_name" value="" required>  
   </div>
     <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">Описание устройства:</label>
-      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text_change"  name="device_text" rows="3" placeholder="Краткое определение устройства или другие заметки"></textarea>
+      <label for="exampleFormControlTextarea1" class="form-label">Описание объекта:</label>
+      <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text_change"  name="device_text" rows="3" placeholder="Краткое определение объекта или другие заметки"></textarea>
     </div>
         <div class="input-group mb-3">
         <input  class="btn btn-primary" type="submit" value="Применить" >

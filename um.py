@@ -490,6 +490,10 @@ def insert_data_form_device(form):
     device_inv = request.form['device_inv']
     device_ident = request.form['device_ident']
     device_text = request.form['device_text']
+    if "Выберите тип объекта" in device_type_name:
+        return redirect(url_for('device'))
+        flash (f"Тип объекта не задан", 'type_error')
+        # device_type_name = "Тип объекта не выбран"
     if device_text == '':
         device_text = "Нет информации"
     if device_inv == '':
