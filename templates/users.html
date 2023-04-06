@@ -39,13 +39,13 @@
     <div>
         <b>Объекты</b>
         <div  style="margin-top: 20px; color: #b3b3b3;" class="div_insert_device">
-          <!-- выбранные устройства -->
+          <!-- выбранные объекты -->
         </div>
         <hr>
     </div>
 
     <div class="mb-3">
-      <!-- <label for="exampleFormControlTextarea1" class="form-label">Описание устройства:</label>
+      <!-- <label for="exampleFormControlTextarea1" class="form-label">Описание объекта:</label>
       <textarea class="form-control" id="device_text"  name="device_text" rows="3" placeholder="Краткое определение устройства или другие заметки" required></textarea> -->
     </div>
         <div class="input-group mb-3">
@@ -81,7 +81,7 @@
 <nav>
   <div style="margin-left: 20px;" class="nav nav-tabs" id="nav-tab" role="tablist">
     <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Выбор сервиса</button>
-    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Выбор устройства</button>
+    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Выбор объекта</button>
     <!-- <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
     <button class="nav-link" id="nav-disabled-tab" data-bs-toggle="tab" data-bs-target="#nav-disabled" type="button" role="tab" aria-controls="nav-disabled" aria-selected="false" disabled>Disabled</button> -->
   </div>
@@ -142,11 +142,11 @@
 <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
 
   
-<!-- Поиск устройства -->
+<!-- Поиск объекта -->
 
   <form style="margin: 20px; width: 600px;" class="needs-validation" action="" method="POST" id="device_search" novalidate> 
 
-  <input style=" border: 2px solid #72a2e0; " class="um_form_input"  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название устройства">
+  <input style=" border: 2px solid #72a2e0; " class="um_form_input"  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название объекта">
 
     <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 81vh;">
     {% set i = namespace(value=0) %}
@@ -170,7 +170,7 @@
           <hr class="um_service_hr">
           <strong>Инвентарный №:</strong>  {{ value.device_inv }}
           <hr class="um_service_hr">
-          <strong>Тип устройства:</strong>  {{ value.device_type_name }}
+          <strong>Тип объекта:</strong>  {{ value.device_type_name }}
           <hr class="um_service_hr">
           {{ value.device_text }}
          </small>

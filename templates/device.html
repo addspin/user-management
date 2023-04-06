@@ -55,7 +55,12 @@
             {% set alert_class = 'alert-warning' %}
             <div class="alert {{alert_class}} fade show" role="alert">
             {{ message }}<strong> {{ device_type_name }}</strong> уже существует!
-            </div>    
+            </div>
+        {% elif category == 'ident_object_add' %}
+            {% set alert_class = 'alert-success' %}
+            <div class="alert {{alert_class}} fade show" role="alert">
+            {{ message }}<strong> {{ data_value }}</strong> добавлен!
+            </div>      
         {% elif category == 'insert_type' %}
             {% set alert_class = 'alert-success' %}
             <div class="alert {{alert_class}} fade show" role="alert">
@@ -117,11 +122,11 @@
 
 </form>
 <form class="" action="{{ url_for('device_del') }}" method="POST" id="device_search" novalidate> 
-  <div class="list-group mx-0 w-auto" style="margin-top: 15px; height: 81vh;">
+  <div class="list-group mx-0 w-auto mostly-customized-scrollbar" style="margin-top: 15px; overflow-y: auto; height: 81vh;">
   {% set i = namespace(value=0) %}
   {% for value in device_value %}
 
-   <label class="list-group-item list_items um_service_list">
+   <label class="list-group-item list_items um_service_list ">
      <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.device_ident }}" name="device_ident" id="device_ident{{ i.value }}" onclick="device_change_data(this,device_remove_hide{{ i.value }},device_type_value{{ i.value }},device_inv_value{{ i.value }},device_ident_value{{ i.value }},device_text_value{{ i.value }})">
      <fieldset disabled>
       <!-- Имя сервиса -->

@@ -368,10 +368,10 @@ def device_insert():
     search_value = False
     if request.method == 'POST':
         form = request.form
-        insert_data_form_device(form)
+        data_value = insert_data_form_device(form)
         search_value = search_device_type()
         device_value = search_device()
-    return render_template('device.html', side_pos='active', device_value=device_value, search_value=search_value)
+    return render_template('device.html', side_pos='active', device_value=device_value, search_value=search_value, data_value=data_value)
 
 @app.route('/device_insert_type', methods=['GET', 'POST']) # создать отдельный /service_insert и /service_search
 def device_insert_type():
@@ -491,28 +491,27 @@ def insert_data_form_device(form):
     device_ident = request.form['device_ident']
     device_text = request.form['device_text']
     if "Выберите тип объекта" in device_type_name:
-        return redirect(url_for('device'))
         flash (f"Тип объекта не задан", 'type_error')
-        # device_type_name = "Тип объекта не выбран"
-    if device_text == '':
-        device_text = "Нет информации"
-    if device_inv == '':
-        device_inv = "Нет информации"
-    conn = sqlite3.connect(path_db)
-    cursor = conn.cursor()
-    # Проверка существует ли тип устройства
-    cursor.execute("create table if not exists device (device_ident varchar(300) PRIMARY KEY, device_inv varchar(300), device_type_name varchar(300), device_text varchar(300));")  
-    device_ident_test = cursor.execute('SELECT * FROM device WHERE device_ident=?', (device_ident, ))
-    if device_ident_test.fetchone() is None: 
-        # Запись нового типа устройства, если такого еще не существует
-        # cursor.execute("create table if not exists device (id integer, device_type_name varchar(300), device_inv varchar(300), device_ident varchar(300) PRIMARY KEY, device_text varchar(300));")  
-        cursor.execute("INSERT INTO device values (?, ?, ?, ?)", (device_ident, device_inv, device_type_name, device_text))
-        conn.commit()
-        conn.close()
-        flash(f"Устройство с идентификатором")
-    else:
-        flash(f"Устройство с идентификатором", 'error')
-    return (device_ident)
+    else: 
+        if device_text == '':
+            device_text = "Нет информации"
+        if device_inv == '':
+            device_inv = "Нет информации"
+        conn = sqlite3.connect(path_db)
+        cursor = conn.cursor()
+        # Проверка существует ли тип устройства
+        cursor.execute("create table if not exists device (device_ident varchar(300) PRIMARY KEY, device_inv varchar(300), device_type_name varchar(300), device_text varchar(300));")  
+        device_ident_test = cursor.execute('SELECT * FROM device WHERE device_ident=?', (device_ident, ))
+        if device_ident_test.fetchone() is None: 
+            # Запись нового типа устройства, если такого еще не существует
+            # cursor.execute("create table if not exists device (id integer, device_type_name varchar(300), device_inv varchar(300), device_ident varchar(300) PRIMARY KEY, device_text varchar(300));")  
+            cursor.execute("INSERT INTO device values (?, ?, ?, ?)", (device_ident, device_inv, device_type_name, device_text))
+            conn.commit()
+            conn.close()
+            flash(f"Объект с идентификатором", 'ident_object_add')
+        else:
+            flash(f"Объект с идентификатором", 'error')
+        return (device_ident)
 
 
 
