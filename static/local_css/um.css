@@ -5,7 +5,7 @@
     /* border: 1px solid #2c2c2c; 
     background-color: #212529; */
     color: #b3b3b3;
-    width: 510px;
+    width: 550px;
 }
 
 .um_bg {
@@ -15,7 +15,9 @@
 .um_service_list {
     background-color: #2a2f35; 
     /* color: #b3b3b3; */
-    color: #43a564
+    color: #43a564;
+    border-color: #595959;
+
 }
 
 .um_form_input_bg {
@@ -55,7 +57,14 @@
     background-color: #1c1e20;
     padding: 10px; 
     color: #b3b3b3;
-    width: 510px;
+    width: 550px;
+}
+
+.um_form_search {
+    background-color: #1c1e20;
+    padding: 10px; 
+    color: #b3b3b3;
+    width: auto;
 }
 
 .um_form_input {
