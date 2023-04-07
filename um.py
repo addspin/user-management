@@ -69,8 +69,14 @@ def change_data_form_service(form):
         service_text = "Нет информации"
     if service_name != service_name_old:
         cursor.execute('DELETE FROM service WHERE service_name =?', (service_name_old, ))
+        # cursor.execute('DELETE FROM service_data WHERE service_name =?', (service_name_old, ))
         cursor.execute('INSERT INTO service values (?, ?, ?, ?)', (service_name, service_url, service_text, service_owner))
-    cursor.execute('REPLACE INTO service values (?, ?, ?, ?)', (service_name, service_url, service_text, service_owner))    
+        cursor.execute("UPDATE service_data SET service_name=?, service_url=?, service_text=?, service_owner=? WHERE service_name=?", (service_name, service_url, service_text, service_owner, service_name))
+
+    cursor.execute('REPLACE INTO service values (?, ?, ?, ?)', (service_name, service_url, service_text, service_owner))
+    cursor.execute("UPDATE service_data SET service_name=?, service_url=?, service_text=?, service_owner=? WHERE service_name=?", (service_name, service_url, service_text, service_owner, service_name))
+    # cursor.execute("REPLACE INTO service_data (service_name, service_url, service_text, service_owner) values (?, ?, ?, ?) WHERE service_name='service_name'", (service_name, service_url, service_text, service_owner))    
+    # cursor.execute("REPLACE INTO service_data (service_name, service_url, service_text, service_owner, user_name) VALUES (?, ?, ?, ?, ?)", ('new', 'new_url', 'new_text', 'new_owner', 'new_tdv'))
     conn.commit()
     conn.close()
    
@@ -265,8 +271,8 @@ def insert_data_type_form_user(form):
     if user_name != ' ':
         conn = sqlite3.connect(path_db)
         cursor = conn.cursor()
-        cursor.execute("create table if not exists service_data (user_name varchar(300), service_name varchar(300) PRIMARY KEY, service_url varchar(300), service_text varchar(1000), service_owner varchar(300));") 
-        cursor.execute("create table if not exists object_data (user_name varchar(300), device_ident varchar(300) PRIMARY KEY, device_inv varchar(300), device_type varchar(1000), device_text varchar(300));") 
+        cursor.execute("create table if not exists service_data (user_name varchar(300), service_name varchar(300), service_url varchar(300), service_text varchar(1000), service_owner varchar(300));") 
+        cursor.execute("create table if not exists object_data (user_name varchar(300), device_ident varchar(300), device_inv varchar(300), device_type varchar(1000), device_text varchar(300));") 
         service_name = False
         service_url = False
         service_text = False
@@ -289,30 +295,8 @@ def insert_data_type_form_user(form):
                 service_text = data[value]
             if "service_owner_" in value:
                 service_owner = data[value]
-                cursor.execute("REPLACE INTO service_data (user_name, service_name, service_url, service_text, service_owner) values (?, ?, ?, ?, ?)", (user_name, service_name, service_url, service_text, service_owner))
-                # cursor.execute('REPLACE INTO service_data values (?, ?, ?, ?, ?)', (user_name, service_name, service_url, service_text, service_owner))
-        # conn.commit()
-            # test_data_service = cursor.execute('SELECT * FROM service_data WHERE service_name=?', (service_name, ))
-            # if test_data_service.fetchone() is None:
-            
-            # cursor.execute('REPLACE INTO service_data values (?, ?, ?, ?, ?)', (user_name, service_name, service_url, service_text, service_owner))
-                # cursor.execute('INSERT INTO service_data values (?, ?, ?, ?, ?)', (user_name, service_name, service_url, service_text, service_owner))
-            # conn.commit()
+                cursor.execute("INSERT INTO service_data (user_name, service_name, service_url, service_text, service_owner) values (?, ?, ?, ?, ?)", (user_name, service_name, service_url, service_text, service_owner))
 
-        # for value in data:
-        #     if "device_ident_" in value:
-        #         device_ident = data[value]
-        #         # print(device_ident)
-        #     if "device_inv_" in value:
-        #         device_inv = data[value]
-        #     if "device_type_" in value:
-        #         device_type = data[value]
-        #     if "device_text_" in value:
-        #         device_text = data[value]
-
-        #     cursor.execute('REPLACE INTO object_data values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
-            # conn.commit() 
-        # device_ident = ""
         device_ident = False
         device_inv = False
         device_type = False
@@ -329,7 +313,7 @@ def insert_data_type_form_user(form):
         #     # test_data_ident = cursor.execute('SELECT * FROM object_data WHERE device_ident=?', (device_ident, ))
         #     # if test_data_ident.fetchone() is None: 
         #         # cursor.execute('INSERT INTO object_data values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
-                cursor.execute('REPLACE INTO object_data (user_name, device_ident, device_inv, device_type, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
+                cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
             # conn.commit() 
 
                 
@@ -431,7 +415,11 @@ def change_data_form_device(form):
     if device_ident != device_ident_old:
         cursor.execute('DELETE FROM device WHERE device_ident =?', (device_ident_old, ))
         cursor.execute('INSERT INTO device values (?, ?, ?, ?)', (device_ident, device_inv, device_type_name, device_text))
-    cursor.execute('REPLACE INTO device values (?, ?, ?, ?)', (device_ident, device_inv, device_type_name, device_text))    
+        cursor.execute("UPDATE object_data SET device_ident=?, device_inv=?, device_type_name=?, device_text=? WHERE device_ident=?", (device_ident, device_inv, device_type_name, device_text, device_ident))
+    
+    cursor.execute('REPLACE INTO device values (?, ?, ?, ?)', (device_ident, device_inv, device_type_name, device_text))   
+    cursor.execute("UPDATE object_data SET device_ident=?, device_inv=?, device_type=?, device_text=? WHERE device_ident=?", (device_ident, device_inv, device_type_name, device_text, device_ident))
+    
     conn.commit()
     conn.close()
 
