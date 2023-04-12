@@ -356,6 +356,7 @@ def search_users_data():
     cursor.execute('SELECT * FROM user_data')
     results = cursor.fetchall()
     conn.close()
+    print (results)
     return (results)
 
 @app.route('/device', methods=['GET', 'POST'])
