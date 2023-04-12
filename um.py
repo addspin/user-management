@@ -160,7 +160,7 @@ def search():
         form = request.form
         user_name = request.form['user_name']
         user = False
-        user = search_users()
+        user = search_users_data()
         display = "display: block;"
         service_data = search_service_name(form)
         object_data = search_object_name(form)
@@ -168,7 +168,7 @@ def search():
 
     else:
         user = False
-        user = search_users()
+        user = search_users_data()
         display = "display: none;"
         return render_template('search.html', side_pos='active', user=user, display=display)
 
@@ -197,21 +197,33 @@ def search_object_name(form):
 def remove_from_user():
     if request.method == 'POST':
         service_name = False
+        user_name = request.form['user_name']
         data = request.form
         conn = sqlite3.connect(path_db)
         cursor = conn.cursor()
         if service_name != ' ':
             for value in data:
-                # print (data[value])
                 if "check_service_" in value:
                     service_name = data[value] 
                     cursor.execute('DELETE FROM service_data WHERE service_name = ?', (service_name, ))
-                    conn.commit()
-            # for value in data:        
+                
+                    # conn.commit()    
                 if "device_ident_" in value:
                     device_ident = data[value] 
                     cursor.execute('DELETE FROM object_data WHERE device_ident = ?', (device_ident, ))   
-                    conn.commit()
+                    # conn.commit()
+            
+            # cursor.execute("SELECT * FROM service_data, object_data WHERE NOT EXISTS (SELECT * FROM service_data WHERE user_name = ?) AND NOT EXISTS (SELECT * FROM object_data WHERE user_name = ?)", (user_name, user_name))
+            cursor.execute('SELECT * FROM service_data WHERE user_name = ?', (user_name, ))
+            if cursor.fetchone() is None:
+                service_data = True
+            cursor.execute('SELECT * FROM object_data WHERE user_name = ?', (user_name, ))
+            if cursor.fetchone() is None:
+                object_data = True
+            if service_data and object_data:
+                cursor.execute('DELETE FROM user_data WHERE user_name = ?', (user_name, ))
+            
+            conn.commit()
             conn.close()
             return redirect(url_for('search'))
 
@@ -273,6 +285,10 @@ def insert_data_type_form_user(form):
         cursor = conn.cursor()
         cursor.execute("create table if not exists service_data (user_name varchar(300), service_name varchar(300), service_url varchar(300), service_text varchar(1000), service_owner varchar(300));") 
         cursor.execute("create table if not exists object_data (user_name varchar(300), device_ident varchar(300), device_inv varchar(300), device_type varchar(1000), device_text varchar(300));") 
+        cursor.execute("create table if not exists user_data (user_name varchar(300));")
+        cursor.execute("SELECT * FROM user_data WHERE user_name = ?", (user_name, ))
+        if cursor.fetchone() is None:
+            cursor.execute("INSERT INTO user_data (user_name) values (?)", (user_name, )) 
         service_name = False
         service_url = False
         service_text = False
@@ -295,7 +311,9 @@ def insert_data_type_form_user(form):
                 service_text = data[value]
             if "service_owner_" in value:
                 service_owner = data[value]
-                cursor.execute("INSERT INTO service_data (user_name, service_name, service_url, service_text, service_owner) values (?, ?, ?, ?, ?)", (user_name, service_name, service_url, service_text, service_owner))
+                cursor.execute("SELECT * FROM service_data WHERE service_name = ?", (service_name, ))
+                if cursor.fetchone() is None:
+                    cursor.execute("INSERT INTO service_data (user_name, service_name, service_url, service_text, service_owner) values (?, ?, ?, ?, ?)", (user_name, service_name, service_url, service_text, service_owner))
 
         device_ident = False
         device_inv = False
@@ -310,17 +328,9 @@ def insert_data_type_form_user(form):
                 device_type = data[value]
             if "device_text_" in value:
                 device_text = data[value]
-        #     # test_data_ident = cursor.execute('SELECT * FROM object_data WHERE device_ident=?', (device_ident, ))
-        #     # if test_data_ident.fetchone() is None: 
-        #         # cursor.execute('INSERT INTO object_data values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
-                cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
-            # conn.commit() 
-
-                
-        # if device_ident == "" and service_name == "":
-        #     flash("Сервисы и объекты не выбраны", 'user_error')
-        # else:
-        #     flash(f"Информация для пользователя ", 'info_add')
+                cursor.execute("SELECT * FROM object_data WHERE device_ident = ?", (device_ident, ))
+                if cursor.fetchone() is None:
+                    cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
  
     conn.commit()
     conn.close()
@@ -332,8 +342,18 @@ def search_users():
     conn = sqlite3.connect(path_db)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-    # cursor.execute("create table if not exists device (id integer, device_type_name varchar(300), device_inv varchar(300), device_ident varchar(300) PRIMARY KEY, device_text varchar(300));")    
+    # cursor.execute("create table if not exists user_data (user_name varchar(300));")    
     cursor.execute('SELECT * FROM users')
+    results = cursor.fetchall()
+    conn.close()
+    return (results)
+
+def search_users_data():
+    conn = sqlite3.connect(path_db)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("create table if not exists user_data (user_name varchar(300));")    
+    cursor.execute('SELECT * FROM user_data')
     results = cursor.fetchall()
     conn.close()
     return (results)
