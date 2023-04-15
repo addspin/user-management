@@ -16,7 +16,7 @@
     <div class="input-group mb-3">
         <!-- <span class="input-group-text" id="basic-addon1">Пользователь:</span> -->
         <hr>
-        <input style=" margin-bottom: 20px; border: 2px solid #72a2e0;" id="user_name" name="user_name" class="um_form_input"  list="datalistOptions" placeholder="Выберите пользователя" required>
+        <input style="border-radius: 0.375rem; margin-bottom: 20px; border: 2px solid #72a2e0;" id="user_name" name="user_name" class="um_form_input"  list="datalistOptions" placeholder="Выберите пользователя" required>
           <datalist id="datalistOptions">
             {% for value in user %}
             <option  value="{{ value.user_name }}">

@@ -560,74 +560,34 @@ def parseCSV(filePath):
         os.remove(os.path.join(UPLOAD_FOLDER, f))
     
 
-
-# @app.route('/service_send_data', methods=['GET', 'POST'])
-# def service_send_ajax():
-#     if request.method == 'POST':
-#         form = request.get_json()
-#         #  print(qtc_data
-#         # form = request.form
-#         print(form)
-#         insert_data_form_service(form)
-        
-  
-#     # results = {'processed': 'true'}
-#     # return jsonify(results)
-#         # service_data = form
-#     return render_template('service.html', side_pos='active')
+@app.route('/options', methods=['GET', 'POST'])
+def options(): 
+    # if request.method == 'POST':
+        # form = request.form
+        # device_type_name = remove_type(form)
+        # search_value = search_device_type()
+        # device_value = search_device()
+    return render_template('options.html', side_pos='active')
 
 
 
+# def insert_data_form_service_search(form):
+#     service_name_search = request.form['service_name_search']
+#     # print(service_name_search)
+#     # if service_name == '':
+#     #     return redirect(url_for('service'))
 
-def insert_data_form_service_search(form):
-    service_name_search = request.form['service_name_search']
-    # print(service_name_search)
-    # if service_name == '':
-    #     return redirect(url_for('service'))
+#     # conn = sqlite3.connect(path_db)
+#     # cursor = conn.cursor()
+#     # cursor.execute("create table if not exists service (id integer PRIMARY KEY, service_name varchar(300), service_url varchar(300), service_text text, service_owner varchar(300));")  
+#     # cursor.execute("INSERT INTO service values (null, ?, ?, ?, ?)", (service_name, service_url, service_text, service_owner))
+#     # conn.commit()
+#     # conn.close()
 
-    # conn = sqlite3.connect(path_db)
-    # cursor = conn.cursor()
-    # cursor.execute("create table if not exists service (id integer PRIMARY KEY, service_name varchar(300), service_url varchar(300), service_text text, service_owner varchar(300));")  
-    # cursor.execute("INSERT INTO service values (null, ?, ?, ?, ?)", (service_name, service_url, service_text, service_owner))
-    # conn.commit()
-    # conn.close()
-
-    return (service_name_search)
-
+#     return (service_name_search)
 
 
-# def insert_data_form_device(form):
-#     device_name = request.form['device_type_name']
-#     device_inv = request.form['device_inv']
-#     device_ident = request.form['device_ident']
-#     conn = sqlite3.connect(path_db)
-#     cursor = conn.cursor()
-#     cursor.execute("create table if not exists device (id integer PRIMARY KEY, device_name varchar(300), device_inv varchar(300), device_ident varchar(300));")
-#     cursor.execute("INSERT INTO device values (null, ?, ?, ?)", (device_name, device_inv, device_ident))
-#     conn.commit()
-#     conn.close()
-#     flash(f"Устройство")
-#     return (device_name)
 
-## for POST ajax
-# def insert_data_form_service(form):
-#     service_name = form['service_name']
-#     service_url = form['service_url']
-#     if service_name == '':
-#         print('HAHAH')
-#         return()
-#     # inv_number = int(request.form['inv_number'])
-#     # print(service_name)
-#     # print(inv_number)
-#     conn = sqlite3.connect(path_db)
-#     cursor = conn.cursor()
-#     cursor.execute("INSERT INTO service values (null, ?, ?)", (service_name, service_url))
-#     conn.commit()
-#     conn.close()
-#     flash("This is a flashed message.")
-    
-
-# return (formated_QTc, prolonged)
 
 
 if __name__ == '__main__':
