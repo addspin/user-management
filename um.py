@@ -523,7 +523,6 @@ def insert_data_form_device(form):
         return (device_ident)
 
 
-
 @app.route('/imp_exp')
 def imp_exp():
     return render_template('imp_exp.html', side_pos='active')
@@ -562,14 +561,44 @@ def parseCSV(filePath):
 
 @app.route('/options', methods=['GET', 'POST'])
 def options(): 
-    # if request.method == 'POST':
-        # form = request.form
-        # device_type_name = remove_type(form)
-        # search_value = search_device_type()
-        # device_value = search_device()
-    return render_template('options.html', side_pos='active')
+    domain_data = False   
+    if request.method == 'POST':
+        form = request.form
+        add_domain(form)
+        domain_data = domain_search()
+        return render_template('options.html', side_pos='active', domain_data=domain_data)
+    else:
+        domain_data = domain_search()
+        return render_template('options.html', side_pos='active', domain_data=domain_data)
 
+def add_domain(form):
+    domain_name = request.form['domain_name']
+    port_name = request.form['port_name']
+    tls = request.form['tls']
+    user_name = request.form['user_name']
+    pwd_name = request.form['pwd_name']
+    search_name = request.form['search_name']
 
+    if domain_name != ' ':
+        conn = sqlite3.connect(path_db)
+        cursor = conn.cursor()
+        cursor.execute("create table if not exists domain (domain_name varchar(300) PRIMARY KEY, port_name varchar(300), tls varchar(300), user_name varchar(1000), pwd_name varchar(300), search_name varchar(300));")
+        domain_name_test = cursor.execute('SELECT * FROM domain WHERE domain_name=?', (domain_name, ))
+
+        if domain_name_test.fetchone() is None: 
+            cursor.execute("INSERT INTO domain values (?, ?, ?, ?, ?, ?)", (domain_name, port_name, tls, user_name, pwd_name, search_name))
+        else:
+            cursor.execute("REPLACE INTO domain values (?, ?, ?, ?, ?, ?)", (domain_name, port_name, tls, user_name, pwd_name, search_name))
+    conn.commit()
+    conn.close()
+
+def domain_search():
+    conn = sqlite3.connect(path_db)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM domain")
+    results = cursor.fetchall()
+    return(results)
 
 # def insert_data_form_service_search(form):
 #     service_name_search = request.form['service_name_search']
