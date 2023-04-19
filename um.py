@@ -207,11 +207,11 @@ def remove_from_user():
                     service_name = data[value] 
                     cursor.execute('DELETE FROM service_data WHERE service_name = ?', (service_name, ))
                 
-                    # conn.commit()    
+                      
                 if "device_ident_" in value:
                     device_ident = data[value] 
                     cursor.execute('DELETE FROM object_data WHERE device_ident = ?', (device_ident, ))   
-                    # conn.commit()
+                    
             
             # cursor.execute("SELECT * FROM service_data, object_data WHERE NOT EXISTS (SELECT * FROM service_data WHERE user_name = ?) AND NOT EXISTS (SELECT * FROM object_data WHERE user_name = ?)", (user_name, user_name))
             cursor.execute('SELECT * FROM service_data WHERE user_name = ?', (user_name, ))
@@ -302,7 +302,6 @@ def insert_data_type_form_user(form):
         # service_name = ""
         # for value in data:
         for value in data:
-            print (data)
             if 'service_name_' in value:
                 service_name = data[value]
             if "service_url_" in value:
@@ -599,6 +598,28 @@ def domain_search():
     cursor.execute("SELECT * FROM domain")
     results = cursor.fetchall()
     return(results)
+
+
+@app.route('/del_domain', methods=['GET', 'POST'])
+def del_domain(): 
+    domain_data = False   
+    if request.method == 'POST':
+        form = request.form
+        del_domain(form)
+        domain_data = domain_search()
+        return render_template('options.html', side_pos='active', domain_data=domain_data)
+    
+def del_domain(form):
+    data = request.form
+    for value in data: 
+        if "domain" in value:
+            domain_name = data[value]
+            conn = sqlite3.connect(path_db)
+            cursor = conn.cursor()
+            cursor.execute('DELETE FROM domain WHERE domain_name = ?', (domain_name, ))    
+            conn.commit()
+            conn.close()
+    return redirect(url_for('options'))
 
 # def insert_data_form_service_search(form):
 #     service_name_search = request.form['service_name_search']
