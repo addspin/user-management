@@ -540,7 +540,7 @@ def domain_conn():
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
     # domain= cursor.execute('SELECT * FROM domain WHERE domain_name=?', (domain_name, ))
-    cursor.execute("create table if not exists users (user_name varchar(300));") 
+    cursor.execute("create table if not exists users (user_name varchar(300) PRIMARY KEY);") 
     cursor.execute('SELECT domain_name FROM domain')
     domain_list = cursor.fetchall()
 
@@ -563,32 +563,27 @@ def domain_conn():
             # подключение к active directory
             conn_ldap = ldap3.Connection(server, user_name, pwd_name, auto_referrals=False)
             conn_ldap.bind()
-
             # поиск пользователей в OU
             attrs = ['displayName']
-
             conn_ldap.search(search_name, filter_name, attributes=attrs)
             for entry in conn_ldap.entries:
                 if entry.displayName != None:
                     user_name = entry.displayName
-                    str(user_name)
-                    test1 ='test1'
-                    # print(user_name)
-                    # print(user_name)
-                    cursor.execute('SELECT * FROM users WHERE user_name=?', (test1, ))
-                    results = cursor.fetchall()
-                    if results.fetchall() is None: 
-                        print('HEEEEEEE')
-                    # cursor.execute("INSERT INTO users values (?)", (user_name, ))
+
+                    # cursor.execute('SELECT * FROM users WHERE user_name=?', (user_name))
+                    # results = cursor.fetchone()
+                    # if results.fetchone() is None: 
+                    cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name))
+                        # cursor.execute("INSERT INTO users (user_name) values (?)", (user_name, ))
                     # cursor.execute('SELECT * FROM users')
                     # results = cursor.fetchall()
                     # print(results)
                     # conn.commit()
-                    # cursor.execute("UPDATE users SET user_name=?",  (user_name, ))
+
                     # user_test = cursor.execute('SELECT * FROM users')
-                    # print(user_test)
+
                     # if user_test.fetchone() is None: 
-                    #     print('HEEEEEEE')
+
                     #     # cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name, ))
                     #     cursor.execute("INSERT INTO users values (?)", (user_name, ))
                     #     conn.commit()
@@ -602,8 +597,8 @@ def domain_conn():
             # закрытие соединения
                        
             conn_ldap.unbind()
-        # conn.commit()
-        conn.close()
+        conn.commit()
+    conn.close()
 
 # @app.route('/imp_exp', methods=['POST'])
 # def imp_exp_file_import():
