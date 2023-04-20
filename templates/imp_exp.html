@@ -13,14 +13,16 @@
         </div>
         <div class="">
             Текущая синхронизация с доменами:
+            <br>
+            <ol>
             {% for value in domain_data %}
-            <ul>
+            
                 <li>{{ value.domain_name}}</li>
-            </ul>
             {% endfor %}
+            </ol>
         </div>
         <br>
-        <input  class="btn btn-primary" type="submit" value="Импортировать пользователей" >
+        <input  class="btn btn-primary" type="submit" value="Импортировать пользователей"  >
         </div>
         
 </div>
