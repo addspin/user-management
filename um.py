@@ -1,10 +1,11 @@
 from flask import Flask, render_template, url_for, request, jsonify, session, flash, redirect
 # from flask_sqlalchemy import SQLAlchemy
-import os 
-from os.path import join, dirname, realpath
+# import os 
+# from os.path import join, dirname, realpath
 import sqlite3
-import pandas as pd
-import json
+# import pandas as pd
+# import json
+import ldap3
 
 path_db = 'db/um.db'
 name_table_service = 'service'
@@ -522,40 +523,118 @@ def insert_data_form_device(form):
         return (device_ident)
 
 
-@app.route('/imp_exp')
+@app.route('/imp_exp', methods=['GET', 'POST'])
 def imp_exp():
-    return render_template('imp_exp.html', side_pos='active')
-
-@app.route('/imp_exp', methods=['POST'])
-def imp_exp_file_import():
-    uploaded_file = request.files['file']
-    
-    if uploaded_file.filename != '':
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-        uploaded_file.save(file_path)
-        parseCSV(file_path)
-        flash("Файл загружен")
+    # form = request.form
+    domain_data = False
+    if request.method == 'POST':
+        domain_conn_data = domain_conn()
+        domain_data = domain_search()
+        return render_template('imp_exp.html', side_pos='active', domain_conn_data=domain_conn_data, domain_data=domain_data)
     else:
-        flash("Файл не загружен", 'error')
-    return redirect(url_for('imp_exp'))
+        domain_data = domain_search()
+        return render_template('imp_exp.html', side_pos='active', domain_data=domain_data)
 
-def parseCSV(filePath):
- 
-    col_names = ['Name']
-    csvData = pd.read_csv(filePath,names=col_names, header=None)
+def domain_conn():
     conn = sqlite3.connect(path_db)
     cursor = conn.cursor()
-    cursor.execute("create table if not exists users (user_name varchar(300) PRIMARY KEY);")  
-    cursor.execute("DELETE FROM users;")
-    
-    for id,user_name in csvData.iterrows():
-        cursor.execute("INSERT INTO users values (?)", (user_name))    
-    conn.commit()
-    conn.close()
+    conn.row_factory = sqlite3.Row
+    # domain= cursor.execute('SELECT * FROM domain WHERE domain_name=?', (domain_name, ))
+    cursor.execute("create table if not exists users (user_name varchar(300));") 
+    cursor.execute('SELECT domain_name FROM domain')
+    domain_list = cursor.fetchall()
 
-    # удлить фсе файлы в каталоге импорта
-    for f in os.listdir(UPLOAD_FOLDER):
-        os.remove(os.path.join(UPLOAD_FOLDER, f))
+    for value in domain_list:
+
+        cursor.execute('SELECT * FROM domain WHERE domain_name=?', (value[0], ))
+        results = cursor.fetchall()
+        for data in results:
+            domain_name = f'{data[0]}'
+            port_name = int(data[1])
+            tls = int(data[2])
+            user_name = f'{data[3]}'
+            filter_name = f'{data[4]}'
+            pwd_name = f'{data[5]}'
+            search_name = f'{data[6]}'
+            # параметры подключения к active directory
+            server = ldap3.Server(domain_name, port=port_name, use_ssl=tls)
+            user_dn = user_name
+            user_password = pwd_name
+            # подключение к active directory
+            conn_ldap = ldap3.Connection(server, user_name, pwd_name, auto_referrals=False)
+            conn_ldap.bind()
+
+            # поиск пользователей в OU
+            attrs = ['displayName']
+
+            conn_ldap.search(search_name, filter_name, attributes=attrs)
+            for entry in conn_ldap.entries:
+                if entry.displayName != None:
+                    user_name = entry.displayName
+                    str(user_name)
+                    test1 ='test1'
+                    # print(user_name)
+                    # print(user_name)
+                    cursor.execute('SELECT * FROM users WHERE user_name=?', (test1, ))
+                    results = cursor.fetchall()
+                    if results.fetchall() is None: 
+                        print('HEEEEEEE')
+                    # cursor.execute("INSERT INTO users values (?)", (user_name, ))
+                    # cursor.execute('SELECT * FROM users')
+                    # results = cursor.fetchall()
+                    # print(results)
+                    # conn.commit()
+                    # cursor.execute("UPDATE users SET user_name=?",  (user_name, ))
+                    # user_test = cursor.execute('SELECT * FROM users')
+                    # print(user_test)
+                    # if user_test.fetchone() is None: 
+                    #     print('HEEEEEEE')
+                    #     # cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name, ))
+                    #     cursor.execute("INSERT INTO users values (?)", (user_name, ))
+                    #     conn.commit()
+                    # else:
+                    #     cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name, ))
+                    # cursor.execute("REPLACE user SET user_name = ?", (name, ))
+            # for entry in conn.entries:
+            #     if entry.displayName != None:
+            #         print(entry.displayName)
+
+            # закрытие соединения
+                       
+            conn_ldap.unbind()
+        # conn.commit()
+        conn.close()
+
+# @app.route('/imp_exp', methods=['POST'])
+# def imp_exp_file_import():
+#     uploaded_file = request.files['file']
+    
+#     if uploaded_file.filename != '':
+#         file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+#         uploaded_file.save(file_path)
+#         parseCSV(file_path)
+#         flash("Файл загружен")
+#     else:
+#         flash("Файл не загружен", 'error')
+#     return redirect(url_for('imp_exp'))
+
+# def parseCSV(filePath):
+ 
+#     col_names = ['Name']
+#     csvData = pd.read_csv(filePath,names=col_names, header=None)
+#     conn = sqlite3.connect(path_db)
+#     cursor = conn.cursor()
+#     cursor.execute("create table if not exists users (user_name varchar(300) PRIMARY KEY);")  
+#     cursor.execute("DELETE FROM users;")
+    
+#     for id,user_name in csvData.iterrows():
+#         cursor.execute("INSERT INTO users values (?)", (user_name))    
+#     conn.commit()
+#     conn.close()
+
+#     # удлить фсе файлы в каталоге импорта
+#     for f in os.listdir(UPLOAD_FOLDER):
+#         os.remove(os.path.join(UPLOAD_FOLDER, f))
     
 
 @app.route('/options', methods=['GET', 'POST'])
@@ -575,19 +654,20 @@ def add_domain(form):
     port_name = request.form['port_name']
     tls = request.form['tls']
     user_name = request.form['user_name']
+    filter_name = request.form['filter']
     pwd_name = request.form['pwd_name']
     search_name = request.form['search_name']
 
     if domain_name != ' ':
         conn = sqlite3.connect(path_db)
         cursor = conn.cursor()
-        cursor.execute("create table if not exists domain (domain_name varchar(300) PRIMARY KEY, port_name varchar(300), tls varchar(300), user_name varchar(1000), pwd_name varchar(300), search_name varchar(300));")
+        
         domain_name_test = cursor.execute('SELECT * FROM domain WHERE domain_name=?', (domain_name, ))
 
         if domain_name_test.fetchone() is None: 
-            cursor.execute("INSERT INTO domain values (?, ?, ?, ?, ?, ?)", (domain_name, port_name, tls, user_name, pwd_name, search_name))
+            cursor.execute("INSERT INTO domain values (?, ?, ?, ?, ?, ?, ?)", (domain_name, port_name, tls, user_name, filter_name, pwd_name, search_name))
         else:
-            cursor.execute("REPLACE INTO domain values (?, ?, ?, ?, ?, ?)", (domain_name, port_name, tls, user_name, pwd_name, search_name))
+            cursor.execute("REPLACE INTO domain values (?, ?, ?, ?, ?, ?, ?)", (domain_name, port_name, tls, user_name, filter_name, pwd_name, search_name))
     conn.commit()
     conn.close()
 
@@ -595,6 +675,7 @@ def domain_search():
     conn = sqlite3.connect(path_db)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
+    cursor.execute("create table if not exists domain (domain_name varchar(300) PRIMARY KEY, port_name varchar(300), tls varchar(300), user_name varchar(1000), filter_name varchar(300), pwd_name varchar(300), search_name varchar(300));")
     cursor.execute("SELECT * FROM domain")
     results = cursor.fetchall()
     return(results)
