@@ -4,10 +4,33 @@
 {%endblock%}
 
 {%block imp_exp_div_main_form%}
+<div class="um_hor_separation"></div>
+
 <form class="um_form_service" action="" enctype="multipart/form-data" method="POST">
     <div  style="margin: 20px; width: 700px;">
         <div class="input-group mb-3">
-            <h4>Импорт файла с пользователями:</h4>
+            <h5>Обновить информацию о пользователях:</h5>
+        </div>
+        <div class="">
+            Текущая синхронизация с доменами:
+            {% for value in domain_data %}
+            <ul>
+                <li>{{ value.domain_name}}</li>
+            </ul>
+            {% endfor %}
+        </div>
+        <br>
+        <input  class="btn btn-primary" type="submit" value="Импортировать пользователей" >
+        </div>
+        
+</div>
+</form>
+<div class="um_hor_separation"></div>
+
+<!-- <form class="um_form_service" action="" enctype="multipart/form-data" method="POST">
+    <div  style="margin: 20px; width: 700px;">
+        <div class="input-group mb-3">
+            <h5>Импорт файла с пользователями:</h5>
         </div>
         <div class="mb-3">
             <label for="formFile" class="form-label"></label>
@@ -31,7 +54,7 @@
 {% endwith %}
         </div>
     </div>
-</form>
+</form> -->
 
 
         

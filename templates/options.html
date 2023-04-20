@@ -4,7 +4,6 @@
 {%endblock%}
 
 {%block options_div_main_form%}
-<!-- Настройки Active Directory -->
 
 <div class="um_hor_separation"></div>
 
@@ -27,11 +26,11 @@
         <div class="input-group mb-3">
            
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="tls" id="inlineRadio1" value="yes">
+            <input class="form-check-input" type="radio" name="tls" id="inlineRadio1" value="1">
             <label class="form-check-label" for="inlineRadio1">Использовать TLS</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="tls" id="inlineRadio2" value="no" checked>
+            <input class="form-check-input" type="radio" name="tls" id="inlineRadio2" value="0" checked>
             <label class="form-check-label" for="inlineRadio2">Без TLS</label>
           </div>
           </div>
@@ -39,6 +38,10 @@
           <div class="input-group mb-3">
             <span class="input-group-text " id="basic-addon1">Пользователь:</span>
             <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control " placeholder="DN пользователя который просматривает домен" id="user_name" name="user_name" required>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text " id="basic-addon1">Фильтр:</span>
+            <input style="background-color: #212529; color: #b3b3b3;" type="text" class="form-control " placeholder="К примеру (objectClass=person)" id="filter" name="filter" required>
         </div>
         <div class="input-group mb-3">
             <span class="input-group-text " id="basic-addon1">Пароль:</span>
@@ -51,7 +54,7 @@
         </div>
         
         <div class="input-group mb-3">
-            <input  class="btn btn-primary" type="submit" value="Применить" >
+            <input  class="btn btn-primary" type="submit" value="Добавить настройки" >
         </div>
         </form>
     
@@ -59,7 +62,7 @@
     <div class="um_hor_separation"></div>
 <div>
     <form id="del_domain" class="needs-validation  um_form_service" action="{{ url_for('del_domain') }}" enctype="multipart/form-data" method="POST">
-    <div  style="margin: 20px; width: auto;" class="um_form_service">
+    <div  style="margin: 20px; width: auto;" class="">
         <div class="input-group mb-3">
             <h5>Текущие опции подключения к домену:</h5>
         </div>
@@ -72,6 +75,7 @@
                 <th scope="col">Порт</th>
                 <th scope="col">TLS</th>
                 <th scope="col">Пользователь</th>
+                <th scope="col">Фильтр</th>
                 <th scope="col">DN поиска</th>
               </tr>
             </thead>
@@ -88,6 +92,7 @@
                 <td>{{ value.port_name }}</td>
                 <td>{{ value.tls }}</td>
                 <td>{{ value.user_name }}</td>
+                <td>{{ value.filter }}</td>
                 <td>{{ value.search_name }}</td>
               </tr>
         {% set i.value = i.value + 1 %} 
@@ -97,9 +102,6 @@
     </div>
     <input form="del_domain" type="submit" class="btn btn-danger" value="Удалить запись о домене">
     </div>
-    <!-- <div class="input-group mb-3"> -->
-   
-<!-- </div> -->
 </form>
 </div>
 
@@ -124,6 +126,5 @@
 
 
 
-    <script src="{{ url_for('static', filename='/local_js/del_domain.js') }}"></script>
-    <script src="{{ url_for('static', filename='/js/jquery-3.6.1.min.js') }}"></script>
+    
 {%endblock%}
