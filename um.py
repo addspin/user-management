@@ -539,7 +539,6 @@ def domain_conn():
     conn = sqlite3.connect(path_db)
     cursor = conn.cursor()
     conn.row_factory = sqlite3.Row
-    # domain= cursor.execute('SELECT * FROM domain WHERE domain_name=?', (domain_name, ))
     cursor.execute("create table if not exists users (user_name varchar(300) PRIMARY KEY);") 
     cursor.execute('SELECT domain_name FROM domain')
     domain_list = cursor.fetchall()
@@ -570,31 +569,8 @@ def domain_conn():
                 if entry.displayName != None:
                     user_name = entry.displayName
 
-                    # cursor.execute('SELECT * FROM users WHERE user_name=?', (user_name))
-                    # results = cursor.fetchone()
-                    # if results.fetchone() is None: 
                     cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name))
-                        # cursor.execute("INSERT INTO users (user_name) values (?)", (user_name, ))
-                    # cursor.execute('SELECT * FROM users')
-                    # results = cursor.fetchall()
-                    # print(results)
-                    # conn.commit()
 
-                    # user_test = cursor.execute('SELECT * FROM users')
-
-                    # if user_test.fetchone() is None: 
-
-                    #     # cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name, ))
-                    #     cursor.execute("INSERT INTO users values (?)", (user_name, ))
-                    #     conn.commit()
-                    # else:
-                    #     cursor.execute("REPLACE INTO users (user_name) values (?)", (user_name, ))
-                    # cursor.execute("REPLACE user SET user_name = ?", (name, ))
-            # for entry in conn.entries:
-            #     if entry.displayName != None:
-            #         print(entry.displayName)
-
-            # закрытие соединения
                        
             conn_ldap.unbind()
         conn.commit()
