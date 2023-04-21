@@ -206,12 +206,12 @@ def remove_from_user():
             for value in data:
                 if "check_service_" in value:
                     service_name = data[value] 
-                    cursor.execute('DELETE FROM service_data WHERE service_name = ?', (service_name, ))
+                    cursor.execute('DELETE FROM service_data WHERE service_name = ? AND user_name = ?', (service_name, user_name))
                 
                       
                 if "device_ident_" in value:
                     device_ident = data[value] 
-                    cursor.execute('DELETE FROM object_data WHERE device_ident = ?', (device_ident, ))   
+                    cursor.execute('DELETE FROM object_data WHERE device_ident = ? AND user_name = ?', (device_ident, user_name))   
                     
             
             # cursor.execute("SELECT * FROM service_data, object_data WHERE NOT EXISTS (SELECT * FROM service_data WHERE user_name = ?) AND NOT EXISTS (SELECT * FROM object_data WHERE user_name = ?)", (user_name, user_name))
@@ -311,7 +311,7 @@ def insert_data_type_form_user(form):
                 service_text = data[value]
             if "service_owner_" in value:
                 service_owner = data[value]
-                cursor.execute("SELECT * FROM service_data WHERE service_name = ?", (service_name, ))
+                cursor.execute("SELECT * FROM service_data WHERE service_name = ? AND user_name = ?", (service_name, user_name))
                 if cursor.fetchone() is None:
                     cursor.execute("INSERT INTO service_data (user_name, service_name, service_url, service_text, service_owner) values (?, ?, ?, ?, ?)", (user_name, service_name, service_url, service_text, service_owner))
 
@@ -328,7 +328,7 @@ def insert_data_type_form_user(form):
                 device_type = data[value]
             if "device_text_" in value:
                 device_text = data[value]
-                cursor.execute("SELECT * FROM object_data WHERE device_ident = ?", (device_ident, ))
+                cursor.execute("SELECT * FROM object_data WHERE device_ident = ? AND user_name = ?", (device_ident, user_name))
                 if cursor.fetchone() is None:
                     cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
  
