@@ -1,5 +1,0 @@
-db/
-Pipfile
-Pipfile.lock
-__pycache__/
-.gitignore
