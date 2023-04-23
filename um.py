@@ -159,19 +159,61 @@ def insert_data_form_service(form):
 def search():
     if request.method == 'POST':
         form = request.form
-        user_name = request.form['user_name']
-        user = False
-        user = search_users_data()
-        display = "display: block;"
-        service_data = search_service_name(form)
-        object_data = search_object_name(form)
-        return render_template('search.html', side_pos='active', object_data=object_data, service_data=service_data, user=user, user_name=user_name, display=display)
+        # data = request.form['object_data']
+        for value in form:
+            if 'object_data' in value:
+                object_name = request.form['object_data']
+                display_user = "display: block;"
+                display = "display: none;"
+                user = False
+                user = search_users_data()
+                user_data = object_search(form)
+                print(user_data)
+                return render_template('search.html', side_pos='active', user=user, user_data=user_data, object_name=object_name, display=display, display_user=display_user)
+            user_name = request.form['user_name']
+            user = False
+            user = search_users_data()
+            display = "display: block;"
+            service_data = search_service_name(form)
+            object_data = search_object_name(form)
+            return render_template('search.html', side_pos='active', object_data=object_data, service_data=service_data, user=user, user_name=user_name, display=display)
 
     else:
         user = False
         user = search_users_data()
         display = "display: none;"
-        return render_template('search.html', side_pos='active', user=user, display=display)
+        display_user = "display: none;"
+        return render_template('search.html', side_pos='active', user=user, display=display, display_user=display_user)
+
+
+def object_search(form):
+    if request.method == 'POST':
+        # form = request.form
+        object_data = request.form['object_data']
+        type = request.form['type']
+        conn = sqlite3.connect(path_db)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        if 'Имя сервиса' in type:
+            service_name = object_data
+            cursor.execute("select user_name from service_data where service_name = ?", (service_name, )) 
+            result = cursor.fetchall()
+            return(result)
+        # if 'Идентификатор' in type:
+        #     service_name = object_data
+        #     cursor.execute("select user_name from service_data where service_name = ?", (service_name, )) 
+        #     result = cursor.fetchall()
+        #     return(result)
+
+    #     return render_template('search.html', side_pos='active', display=display)
+
+    # else:
+    #     user = False
+    #     user = search_users_data()
+    #     display = "display: none;"
+    #     return render_template('search.html', side_pos='active', user=user, display=display)
+
 
 def search_service_name(form):
     user_name = request.form['user_name']
