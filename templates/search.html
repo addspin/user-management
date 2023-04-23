@@ -5,32 +5,58 @@
 
 {%block search_div_main_form%}
 <div class="um_hor_separation"></div>
-<div class="input-group mb-3 um_form_search">
-<!-- <div class="input-group mb-3 text-bg-dark"> -->
 
-<div  style="margin: 20px; width: 1000px;">
-<form class="needs-validation" action="{{ url_for('search') }}" method="POST" id="user_name_form" novalidate>
-  <!-- <form class="needs-validation" action="" method="POST"  id="user_name_form" novalidate on> -->
+<div class="input-group mb-3 um_form_search">
+
+<!-- Поиск по пользователю -->
+<div style="margin: 20px; width:500px;">
+<form class="row g-2 needs-validation" action="{{ url_for('search') }}" method="POST" id="user_name_form" novalidate>
     <div class="input-group mb-3">
     <h5>Информация по пользователям:</h5>
     </div>
-    <input style=" margin-bottom: 20px; border: 2px solid #72a2e0;" id="user_name" name="user_name" class="um_form_input"  list="datalistOptions" placeholder="Выберите пользователя" required>
+    <div class="col-auto">
+    <input style="width: 390px; margin-bottom: 20px; border: 2px solid #72a2e0;" id="user_name" name="user_name" class="um_form_input_search"  list="datalistOptions" placeholder="Выберите пользователя" required>
     <datalist id="datalistOptions">
     {% for value in user %}
     <option  value="{{ value.user_name }}">
     {% endfor %}
     </datalist>
+  </div>
+  <div class="col-auto">
+    <label for="inputState" class="form-label"></label>
+    <input  class="btn btn-warning" type="submit" value="Поиск">
+  </div>
 </form>
-    
 
+<!-- Поиск по содержимому -->
+<form  class="row g-2 needs-validation" action="" method="POST" id="object_data_form" novalidate>
+  <div class="col-auto">
+    <label for="inputCity" class="form-label">Поиск по содержанию:</label>
+    <input style="margin-right: 0; width: auto ;" type="text" class="form-control" id="object_data" name="object_data" placeholder="">
+  </div>
+  <div class="col-auto">
+    <label for="inputState" class="form-label">Объект поиска:</label>
+    <select id="inputState" name="type" class="form-select">
+      <option  selected>Идентификатор</option>
+      <option>Инвентарный №</option>
+      <option>Тип объекта</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <input style="margin-top: 32px; margin-left: 5px;" class="btn btn-warning" type="submit" value="Поиск">
+  </div>
+</form>
+</div>
+</div>
 
-<div style="{{ display }}"  class="input-group mb-3" id="hide_user_data">
+<div class="um_hor_separation"></div>
+
+<div  style="margin: 20px;" class="input-group mb-3 um_form_search">
+<div style="{{ display }} margin-top: 10px;"  class="input-group mb-3" id="hide_user_data">
 Выбранный пользователь: <h6>{{ user_name }}</h6>
 <form class="d-flex gap-5 " action="{{ url_for('remove_from_user') }}" method="POST" id="remove_from_user" novalidate> 
   
-  <!-- <form style="" class="d-flex gap-5 " action="" method="POST" id="remove_from_user" novalidate>  -->
     <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 70vh;">
-      <!-- <input style="display: none;"  type="text" value="{{ user_name }}" name="user_name"> -->
       <input style="display: none;"  type="text" value="{{ user_name }}" name="user_name">
     {% set i = namespace(value=0) %}
     {% for value in service_data %}
@@ -39,9 +65,7 @@
        <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.service_name }}" name="check_service_{{ i.value }}" id="service_name_value">
        <fieldset disabled>
        <input style="display: none;"  type="text" value="{{ value.service_name }}" id="service_name_value{{ i.value }}">
-       <!-- <input style="display: none;"  type="text" value="{{ value.service_url }}" id="service_url_value{{ i.value }}">
-       <input style="display: none;"  type="text" value="{{ value.service_text }}" id="service_text_value{{ i.value }}">
-       <input style="display: none;"  type="text" value="{{ value.service_owner }}" id="service_owner_value{{ i.value }}"> -->
+
        </fieldset> 
        <span>
          <h6>{{  value.service_name }}</h6>
@@ -52,19 +76,13 @@
           <strong> Ответсвенный:</strong>  {{ value.service_owner }}
          </small>
          <hr class="um_service_hr">
-         <!-- <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить сервис" id="service_remove_hide{{ i.value }}"> -->
+
        </span> 
      </label>
         {% set i.value = i.value + 1 %} 
     {% endfor %}
   </div>
-    <!-- <fieldset disabled>
-      <input style="display: none;"  type="text" value="{{ i.value }}" name="" id="number_service">
-     </fieldset> -->
-   
-<!-- </form> -->
 
-<!-- <form class="" action="{{ url_for('device_del') }}" method="POST" id="device_search" novalidate>  -->
 
   <div class="list-group mx-0 w-auto mostly-customized-scrollbar" style="margin-top: 15px; overflow-y: auto; height: 70vh;">
    
@@ -74,10 +92,8 @@
    <label class="list-group-item list_items  um_service_list">
      <input class="form-check-input flex-shrink-0" type="checkbox" value="{{ value.device_ident }}" name="device_ident_{{ i.value }}" id="device_ident{{ i.value }}">
      <fieldset disabled>
-      <!-- <input style="display: none;"  type="text" value="{{ value.device_type_name }}" id="device_type_value{{ i.value }}">
-      <input style="display: none;"  type="text" value="{{ value.device_inv }}" id="device_inv_value{{ i.value }}"> -->
       <input style="display: none;"  type="text" value="{{ value.device_ident }}" id="device_ident_value{{ i.value }}">
-      <!-- <input style="display: none;"  type="text" value="{{ value.device_text }}" id="device_text_value{{ i.value }}"> -->
+
      </fieldset>
      <span>
        <h6>ID: {{ value.device_ident }}</h6>
@@ -90,41 +106,23 @@
         <strong>Доп. информация:</strong>  {{ value.device_text }}
        </small>
        <hr class="um_service_hr">
-       <!-- <input style="display: none;" class="btn btn-danger" type="submit" value="Удалить устройство" id="device_remove_hide{{ i.value }}"> -->
+
      </span> 
    </label>
       {% set i.value = i.value + 1 %} 
   {% endfor %}
   </div>
-  <!-- <fieldset disabled>
-    <input style="display: none;"  type="text" value="{{ i.value }}" name="" id="number_device">
-   </fieldset> -->
+
 </form>
 <div style="" lass="input-group mb-3">
-  <!-- <input form="remove_from_user" class="btn btn-danger" type="submit" value="Убрать объекты у пользователя"> -->
+
   <input form="remove_from_user" class="btn btn-danger" type="submit" value="Убрать объекты у пользователя">
 </div>
 </div>
-<!-- </div> -->
-
-</div>
 </div>
 
-<!-- </div> -->
-<!-- Удаление сервисов и объектов у пользователя -->
-<!-- <script src="{{ url_for('static', filename='/local_js/example/service_data_form.js') }}"></script> -->
-<!-- <script src="{{ url_for('static', filename='/js/jquery-3.6.1.min.js') }}"></script> -->
-<!-- <script>
-  $('#user_name_form').on('submit',function(event){  
-    if (event.which == 13)
-      var hide = document.getElementById("hide_user_data");
-      console.log(hide) 
-      if (hide.style.display == "none") {
-          hide.style.display = "block";
-      }
-      event.preventDefault(); 
-  });
-  
-</script> -->
+
+
+
 
 {%endblock%}

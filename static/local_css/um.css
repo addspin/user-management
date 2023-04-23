@@ -85,6 +85,25 @@
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
+.um_form_input_search {
+    display: block;
+    width: 31rem;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #fff;
+    background-color: #212529;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0.375rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+
 .nav-tabs .nav-link.active {
     color: #b3b3b3 ;
     background-color:  #2a2f35;
