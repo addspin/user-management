@@ -333,7 +333,7 @@ def insert_data_type_form_user(form):
         conn = sqlite3.connect(path_db)
         cursor = conn.cursor()
         cursor.execute("create table if not exists service_data (user_name varchar(300), service_name varchar(300), service_url varchar(300), service_text varchar(1000), service_owner varchar(300));") 
-        cursor.execute("create table if not exists object_data (user_name varchar(300), device_ident varchar(300), device_inv varchar(300), device_type varchar(1000), device_text varchar(300));") 
+        cursor.execute("create table if not exists object_data (user_name varchar(300), device_ident varchar(300), device_inv varchar(300), device_type_name varchar(1000), device_text varchar(300));") 
         cursor.execute("create table if not exists user_data (user_name varchar(300));")
         cursor.execute("SELECT * FROM user_data WHERE user_name = ?", (user_name, ))
         if cursor.fetchone() is None:
@@ -378,7 +378,9 @@ def insert_data_type_form_user(form):
                 device_text = data[value]
                 cursor.execute("SELECT * FROM object_data WHERE device_ident = ? AND user_name = ?", (device_ident, user_name))
                 if cursor.fetchone() is None:
+
                     cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type_name, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type_name, device_text))
+
  
     conn.commit()
     conn.close()
@@ -487,7 +489,7 @@ def change_data_form_device(form):
         cursor.execute("UPDATE object_data SET device_ident=?, device_inv=?, device_type_name=?, device_text=? WHERE device_ident=?", (device_ident, device_inv, device_type_name, device_text, device_ident))
     
     cursor.execute('REPLACE INTO device values (?, ?, ?, ?)', (device_ident, device_inv, device_type_name, device_text))   
-    cursor.execute("UPDATE object_data SET device_ident=?, device_inv=?, device_type=?, device_text=? WHERE device_ident=?", (device_ident, device_inv, device_type_name, device_text, device_ident))
+    cursor.execute("UPDATE object_data SET device_ident=?, device_inv=?, device_type_name=?, device_text=? WHERE device_ident=?", (device_ident, device_inv, device_type_name, device_text, device_ident))
     
     conn.commit()
     conn.close()
