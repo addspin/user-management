@@ -174,9 +174,10 @@ def search():
             user = False
             user = search_users_data()
             display = "display: block;"
+            display_user = "display: none;"
             service_data = search_service_name(form)
             object_data = search_object_name(form)
-            return render_template('search.html', side_pos='active', object_data=object_data, service_data=service_data, user=user, user_name=user_name, display=display)
+            return render_template('search.html', side_pos='active', object_data=object_data, service_data=service_data, user=user, user_name=user_name, display_user=display_user, display=display)
 
     else:
         user = False
@@ -200,19 +201,24 @@ def object_search(form):
             cursor.execute("select user_name from service_data where service_name = ?", (service_name, )) 
             result = cursor.fetchall()
             return(result)
-        # if 'Идентификатор' in type:
-        #     service_name = object_data
-        #     cursor.execute("select user_name from service_data where service_name = ?", (service_name, )) 
-        #     result = cursor.fetchall()
-        #     return(result)
-
-    #     return render_template('search.html', side_pos='active', display=display)
-
-    # else:
-    #     user = False
-    #     user = search_users_data()
-    #     display = "display: none;"
-    #     return render_template('search.html', side_pos='active', user=user, display=display)
+        
+        if 'Идентификатор' in type:
+            device_ident = object_data
+            cursor.execute("select user_name from object_data where device_ident = ?", (device_ident, )) 
+            result = cursor.fetchall()
+            return(result)
+        
+        if 'Инвентарный №' in type:
+            device_inv = object_data
+            cursor.execute("select user_name from object_data where device_inv = ?", (device_inv, )) 
+            result = cursor.fetchall()
+            return(result)
+        
+        if 'Тип объекта' in type:
+            device_type_name = object_data
+            cursor.execute("select user_name from object_data where device_type_name = ?", (device_type_name, )) 
+            result = cursor.fetchall()
+            return(result)
 
 
 def search_service_name(form):
@@ -367,12 +373,12 @@ def insert_data_type_form_user(form):
             if "device_inv_" in value:
                 device_inv = data[value]
             if "device_type_" in value:
-                device_type = data[value]
+                device_type_name = data[value]
             if "device_text_" in value:
                 device_text = data[value]
                 cursor.execute("SELECT * FROM object_data WHERE device_ident = ? AND user_name = ?", (device_ident, user_name))
                 if cursor.fetchone() is None:
-                    cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type, device_text))
+                    cursor.execute('INSERT INTO object_data (user_name, device_ident, device_inv, device_type_name, device_text) values (?, ?, ?, ?, ?)', (user_name, device_ident, device_inv, device_type_name, device_text))
  
     conn.commit()
     conn.close()
