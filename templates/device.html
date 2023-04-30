@@ -112,15 +112,12 @@
 <div class="um_hor_separation"></div>
 
 <!-- Поиск объекта -->
+<div  style="margin: 20px; width: 620px;" class ="um_form_service">
+<div class="input-group mb-3">
+  <h5>Поиск объекта:</h5>
+</div>
+<input style=" border: 2px solid #72a2e0; " class="um_form_input "  id="device_name_search" name="device_name_search" placeholder="Поиск по объектам:">
 
-<form class="um_form_service" action="" method="POST" novalidate>
-<div  style="margin: 20px; width: auto;" class ="">
-  <div class="input-group mb-3">
-    <h5>Поиск объекта:</h5>
-  </div>
-<input style=" border: 2px solid #72a2e0; " class="um_form_input "  id="device_name_search" name="device_name_search" placeholder="Выбирите или начните набирать название объекта">
-
-</form>
 <form class="" action="{{ url_for('device_del') }}" method="POST" id="device_search" novalidate> 
   <div class="list-group mx-0 w-auto mostly-customized-scrollbar" style="margin-top: 15px; overflow-y: auto; height: 81vh;">
   {% set i = namespace(value=0) %}
@@ -200,7 +197,7 @@
 </div>
 
 </form>
-
+</div>
 <!-- <script src="{{ url_for('static', filename='/local_js/insert_del_btn_device.js') }}"></script> -->
 <!-- <script src="{{ url_for('static', filename='/js/bootstrap.bundle.min.js') }}"></script> -->
 

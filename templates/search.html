@@ -52,12 +52,18 @@
 
 <div class="um_hor_separation"></div>
 
-<div  style="margin-left: 10px;" class="input-group mb-3 um_form_search">
-<div style="{{ display }} margin-top: 10px;"  class="input-group mb-3" id="hide_user_data">
+<div  style="margin-left: 10px;" class="input-group mb-3 um_form_search" >
+ 
+<div style="{{ display }} margin-top: 10px;"  class="" id="hide_user_data">
+  <div style="margin-top: 10px;" class="input-group mb-3">
+    <h5>Результаты поиска:</h5>
+  </div>
 Выбранный пользователь: <h6>{{ user_name }}</h6>
+<input style=" border: 2px solid #72a2e0; " class="input-group mb-3 um_form_input" list="datalistOptions" id="search_data" name="search_data" placeholder="Поиск в найденных элементах">
+
 <form class="d-flex gap-5 " action="{{ url_for('remove_from_user') }}" method="POST" id="remove_from_user" novalidate> 
-  
-    <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 70vh;">
+
+    <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 70vh;" id="test">
       <input style="display: none;"  type="text" value="{{ user_name }}" name="user_name">
     {% set i = namespace(value=0) %}
     {% for value in service_data %}
@@ -82,6 +88,7 @@
      </label>
         {% set i.value = i.value + 1 %} 
     {% endfor %}
+
   </div>
 
 
@@ -113,7 +120,7 @@
       {% set i.value = i.value + 1 %} 
   {% endfor %}
   </div>
-
+ 
 </form>
 <div style="" сlass="input-group mb-3">
 
@@ -145,9 +152,14 @@
   
   </form>
 
+<script src="{{ url_for('static', filename='/js/jquery-3.6.1.min.js') }}"></script>
+<!-- Поиск по списку сервисов -->
+<script src="{{ url_for('static', filename='/local_js/search_object.js') }}"></script>
+
+
+
+
 </div>
-
-
 
 
 
