@@ -56,9 +56,11 @@
  
 <div style="{{ display }} margin-top: 10px;"  class="" id="hide_user_data">
   <div style="margin-top: 10px;" class="input-group mb-3">
-    <h5>Результаты поиска:</h5>
+    <h5>Результаты поиска:    </h5>
   </div>
-Выбранный пользователь: <h6>{{ user_name }}</h6>
+<div class="input-group mb-3">
+    Выбранный пользователь: &nbsp; <b>{{ user_name }}</b>
+</div>
 <input style=" border: 2px solid #72a2e0; " class="input-group mb-3 um_form_input" list="datalistOptions" id="search_data" name="search_data" placeholder="Поиск в найденных элементах">
 
 <form class="d-flex gap-5 " action="{{ url_for('remove_from_user') }}" method="POST" id="remove_from_user" novalidate> 
@@ -131,12 +133,19 @@
 
 <!-- object output -->
 
-<div style="{{ display_user }} "  class="" id="hide_user">
-  <form  style="width: auto;" class="needs-validation um_form_service" action="" method="POST" id="" novalidate> 
+
+<div style="{{ display_user }} "  class="um_form_service" id="hide_user">
+
+  <div style="margin-top: 10px;" class="input-group mb-3">
+    <h5>Результаты поиска:    </h5>
+  </div>
+  
+  <input style=" border: 2px solid #72a2e0; " class="input-group mb-3 um_form_input" list="datalistOptions" id="search_user"  placeholder="Поиск в найденных элементах">
+  <form  style="width: auto;" class="needs-validation" action="" method="POST"  novalidate> 
     <div class="input-group mb-3">
       <h5> <b>{{ object_name }}</b> - имеется у следующих пользователей:</h5>
       </div>
-      <div class="list-group mx-0 w-auto mostly-customized-scrollbar " style="margin-top: 15px; overflow-y: auto; height: 70vh;">
+      <div class="list-group mx-0 w-auto mostly-customized-scrollbar " id="search_user_data" style="margin-top: 15px; overflow-y: auto; height: 70vh;">
       {% set i = namespace(value=0) %}
       {% for value in user_data %}
        <label class="list-group-item list_items um_service_list">
@@ -156,7 +165,8 @@
 <!-- Поиск по списку сервисов -->
 <script src="{{ url_for('static', filename='/local_js/search_object.js') }}"></script>
 
-
+<!-- Поиск по списку пользователей -->
+<script src="{{ url_for('static', filename='/local_js/search_user_data.js') }}"></script>
 
 
 </div>
