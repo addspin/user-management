@@ -596,14 +596,14 @@ def export():
         request.form
         value = request.form['export']
         
-        if 'Сервисы' in value:
+        if 'Пользователи и сервисы' in value:
             conn = sqlite3.connect(path_db)
             # cursor = conn.cursor()
             export_data = pd.read_sql('SELECT * FROM service_data' ,conn)
             export_data.to_csv('export/service_data.csv', index=False)
             return send_file('export/service_data.csv', as_attachment=True)
         
-        if 'Объекты' in value:
+        if 'Пользователи и объекты' in value:
             conn = sqlite3.connect(path_db)
             # cursor = conn.cursor()
             export_data = pd.read_sql('SELECT * FROM object_data' ,conn)
