@@ -5,31 +5,57 @@
 
 {%block imp_exp_div_main_form%}
 <div class="um_hor_separation"></div>
-
-<form class="um_form_service" action="" enctype="multipart/form-data" method="POST">
-    <div  style="margin: 20px; width: 700px;">
-        <div class="input-group mb-3">
-            <h5>Обновить информацию о пользователях:</h5>
-        </div>
-        <div class="">
-            Текущая синхронизация с доменами:
+<div class="um_form_service">
+    <form class="um_form_service" action="" enctype="multipart/form-data" method="POST">
+        <div  style="margin: 20px; width: 700px;">
+            <div class="input-group mb-3">
+                <h5>Обновить информацию о пользователях:</h5>
+            </div>
+                <div class="">
+                    Текущая синхронизация с доменами:
+                    <br>
+                    <ol>
+                    {% for value in domain_data %}
+                        <li>{{ value.domain_name}}</li>
+                    {% endfor %}
+                    </ol>
+                </div>
             <br>
-            <ol>
-            {% for value in domain_data %}
-            
-                <li>{{ value.domain_name}}</li>
-            {% endfor %}
-            </ol>
+            <input style="display: none;" name="domain" value="domain">
+            <input  class="btn btn-primary" type="submit" value="Импортировать пользователей"  >
         </div>
-        <br>
-        <input  class="btn btn-primary" type="submit" value="Импортировать пользователей"  >
+            <div>
+                Если пользователя нет в <b>"Карточке"</b>, нажмите <b>"Ипортировать пользователей"</b>.
+            </div>
+    </form>
+<hr>
+<!-- Экспорт -->
+<form class=" row g-2" action="{{ url_for('export') }}" enctype="multipart/form-data" method="POST">
+    <div  >
+        <div  style = "margin: 20px; width: 700px;" class="input-group mb-3">
+            <h5>Экспорт данных:</h5>
         </div>
-        <div>
-            Если пользователя нет в <b>"Карточке"</b>, нажмите <b>"Ипортировать пользователей"</b>.
-        </div>
+
         
-</div>
+        <div style = "margin: 20px; width: 700px;" class="input-group mb-3">
+        <div class="col-auto ">
+            <!-- <label for="inputState" class="form-label">Объект поиска:</label> -->
+            <select style="width: 390px;" id="inputState" name="export" class="form-select">
+            <option  selected>Сервисы</option>
+            <option>Объекты</option>
+            </select>
+            
+        </div>
+        <div class="col-auto ">
+            <input  style="margin-left: 20px;" class="btn btn-primary" type="submit" value="экспорт">
+        </div>
+        </div>
+    </div>
 </form>
+</div>
+
+
+
 <div class="um_hor_separation"></div>
 
 <!-- <form class="um_form_service" action="" enctype="multipart/form-data" method="POST">
