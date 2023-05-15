@@ -1,4 +1,6 @@
 db/
+export/service_data.csv
+export/object_data.csv
 Pipfile
 Pipfile.lock
 __pycache__/

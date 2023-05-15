@@ -1,9 +1,9 @@
-from flask import Flask, render_template, url_for, request, jsonify, session, flash, redirect
+from flask import Flask, render_template, url_for, request, jsonify, session, flash, redirect, send_file
 # from flask_sqlalchemy import SQLAlchemy
 # import os 
 # from os.path import join, dirname, realpath
 import sqlite3
-# import pandas as pd
+import pandas as pd
 # import json
 import ldap3
 
@@ -575,15 +575,40 @@ def insert_data_form_device(form):
 
 @app.route('/imp_exp', methods=['GET', 'POST'])
 def imp_exp():
-    # form = request.form
-    domain_data = False
     if request.method == 'POST':
-        domain_conn_data = domain_conn()
-        domain_data = domain_search()
-        return render_template('imp_exp.html', side_pos='active', domain_conn_data=domain_conn_data, domain_data=domain_data)
+        domain = request.form['domain']
+
+        if 'domain' in domain:
+            domain_conn_data = domain_conn()
+            domain_data = domain_search()
+            return render_template('imp_exp.html', side_pos='active', domain_conn_data=domain_conn_data, domain_data=domain_data)
+    
+   
+        
+        
     else:
         domain_data = domain_search()
         return render_template('imp_exp.html', side_pos='active', domain_data=domain_data)
+
+@app.route('/export', methods=['GET', 'POST'])
+def export():
+     if request.method == 'POST':
+        request.form
+        value = request.form['export']
+        
+        if 'Пользователи и сервисы' in value:
+            conn = sqlite3.connect(path_db)
+            # cursor = conn.cursor()
+            export_data = pd.read_sql('SELECT * FROM service_data' ,conn)
+            export_data.to_csv('export/service_data.csv', index=False)
+            return send_file('export/service_data.csv', as_attachment=True)
+        
+        if 'Пользователи и объекты' in value:
+            conn = sqlite3.connect(path_db)
+            # cursor = conn.cursor()
+            export_data = pd.read_sql('SELECT * FROM object_data' ,conn)
+            export_data.to_csv('export/object_data.csv', index=False)
+            return send_file('export/object_data.csv', as_attachment=True)
 
 def domain_conn():
     conn = sqlite3.connect(path_db)

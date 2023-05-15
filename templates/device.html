@@ -36,7 +36,7 @@
       <textarea style="background-color: #212529; color: #b3b3b3;" class="form-control" id="device_text"  name="device_text" rows="3" placeholder="Краткое определение объекта или другие заметки" required></textarea>
     </div>
         <div class="input-group mb-3">
-        <input  class="btn btn-primary" type="submit" value="Добавить объект" >
+        <input  class="btn btn-warning" type="submit" value="Добавить объект" >
     </div>
   
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -99,7 +99,7 @@
   </div>
 <div class="row">
 <div class="col">
-  <input  formaction="{{ url_for('device_insert_type') }}" formmethod="post" class="btn btn-primary" type="submit" value="Добавить тип объекта">
+  <input  formaction="{{ url_for('device_insert_type') }}" formmethod="post" class="btn btn-warning" type="submit" value="Добавить тип объекта">
 </div>
 <div class="col-md-auto">
   <input  formaction="{{ url_for('device_remove_type') }}" formmethod="post" class="btn btn-danger" type="submit" value="Удалить тип объекта">
