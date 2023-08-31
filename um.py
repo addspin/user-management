@@ -246,6 +246,8 @@ def search_object_name(form):
 def remove_from_user():
     if request.method == 'POST':
         service_name = False
+        service_data = False
+        object_data = False
         user_name = request.form['user_name']
         data = request.form
         conn = sqlite3.connect(path_db)
